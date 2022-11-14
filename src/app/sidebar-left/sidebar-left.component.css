@@ -1,10 +1,26 @@
 .sidebar-left-dark {
+    position: relative;
     width: 199px;
     border-top: 1px solid #6c757d; 
     border-bottom: 1px solid #6c757d; 
     border-left: 1px solid #6c757d; 
     color: white;
-    height: calc(100vh - 49px);     /* Subtract sticky nav height with py-1 of 48px plus 1px for border-bottom (default nav height is 56px) */
+    background-color: #343a40;
+    height: calc(100vh - 49px);     /* Subtract nav height */
     float: left;
     overflow: auto;
 }
+
+.dragDiv {
+    position: absolute;
+    width: 10px;
+    height: calc(100vh - 51px);
+    right: 0px;
+    top: 0px;
+    z-index: 10;
+    cursor: col-resize;
+    overflow: hidden;
+    color: #343a40;
+    font-size: 10px;;
+}
+

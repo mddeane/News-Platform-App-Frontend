@@ -5,7 +5,8 @@
     border-left: 1px solid #6c757d; 
     border-right: 1px solid #6c757d; 
     color: white;
-    height: calc(100vh - 49px);     /* Subtract sticky nav height with py-1 of 48px plus 1px for border-bottom (default nav height is 56px) */
+    background-color: #212529;
+    height: calc(100vh - 49px);     /* Subtract nav height */
     float: left;
     overflow: auto;
 }

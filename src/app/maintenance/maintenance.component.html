@@ -1,0 +1,49 @@
+<div class="position-div" (mousemove)="xPos=getMoveX($event); yPos=getMoveY($event); "
+    (mousedown)="xStart=getXStart($event); yStart=getYStart($event);"
+    (mouseup)="xEnd=getXEnd($event); yEnd=getYEnd($event);">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col">
+                <p>xPos: {{xPos}}</p>
+            </div>
+            <div class="col">
+                <p>yPos: {{yPos}}</p>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                <p>xStart: {{xStart}}</p>
+            </div>
+            <div class="col">
+                <p>yStart: {{yStart}}</p>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                <p>xEnd: {{xEnd}}</p>
+            </div>
+            <div class="col">
+                <p>yEnd: {{yEnd}}</p>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                <p>xEnd - xStart = {{xEnd - xStart}}</p>
+            </div>
+            <div class="col">
+                <p>yEnd - yStart = {{yEnd - yStart}}</p>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                <p>activeLeft: {{activeLeft}}</p>
+            </div>
+            <div class="col">
+                <p>activeTop: {{activeTop}}</p>
+            </div>
+        </div>
+    </div>
+</div>
+<div #dragDiv class="draggable-div" (mousedown)="moveActiveElement=dragDiv">
+    Draggable
+</div>

@@ -1,0 +1,15 @@
+.position-div {
+    width: 100%;
+    height: calc(100vh - 51px);
+    display: block;
+}
+
+.draggable-div {
+    position: absolute;
+    top: 49px;
+    right: 0px;
+    width: 100px;
+    height: 100px;
+    background-color: gray;
+    text-align: center;
+}

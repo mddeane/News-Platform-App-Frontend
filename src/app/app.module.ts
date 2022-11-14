@@ -6,13 +6,17 @@ import { AppComponent } from './app.component';
 import { NavbarComponent } from './navbar/navbar.component';
 import { SidebarLeftComponent } from './sidebar-left/sidebar-left.component';
 import { MainContentComponent } from './main-content/main-content.component';
+import { DashboardComponent } from './dashboard/dashboard.component';
+import { MaintenanceComponent } from './maintenance/maintenance.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     NavbarComponent,
     SidebarLeftComponent,
-    MainContentComponent
+    MainContentComponent,
+    DashboardComponent,
+    MaintenanceComponent
   ],
   imports: [
     BrowserModule,
