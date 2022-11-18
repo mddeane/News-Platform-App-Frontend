@@ -4,4 +4,33 @@ body {
     min-width: 300px;
     font-family: 'Montserrat';
     background-color: #212529;
+    overflow: hidden;
 }
+
+/**** SCROLL BAR ****/
+
+::-webkit-scrollbar {
+    width: 12px;
+    height: 12px;
+  }
+  
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  
+  ::-webkit-scrollbar-thumb {
+    background: #6c757d;
+  }
+  
+  /* ::-webkit-scrollbar-thumb:hover {
+    background: #0d6efd;
+    width: 4px;
+  } */
+
+  ::-webkit-scrollbar-track-piece {
+    background: #212529;
+  }
+
+  ::-webkit-scrollbar-corner {
+    background: #212529;
+  }

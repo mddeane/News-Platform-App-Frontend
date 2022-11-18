@@ -1,0 +1,29 @@
+table {
+    min-width: max-content;
+    width: auto;
+    table-layout: fixed;
+}
+
+table th, td {
+    white-space: nowrap;
+    border: 1px solid #6c757d;
+}
+
+.cursor-move {
+    cursor: move;
+}
+
+.cursor-pointer {
+    cursor: pointer;
+}
+
+.cursor-col-resize {
+    cursor: col-resize;
+}
+
+.no-select {
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}

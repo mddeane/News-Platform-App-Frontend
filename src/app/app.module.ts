@@ -8,6 +8,7 @@ import { SidebarLeftComponent } from './sidebar-left/sidebar-left.component';
 import { MainContentComponent } from './main-content/main-content.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { MaintenanceComponent } from './maintenance/maintenance.component';
+import { RundownComponent } from './rundown/rundown.component';
 
 @NgModule({
   declarations: [
@@ -16,7 +17,8 @@ import { MaintenanceComponent } from './maintenance/maintenance.component';
     SidebarLeftComponent,
     MainContentComponent,
     DashboardComponent,
-    MaintenanceComponent
+    MaintenanceComponent,
+    RundownComponent
   ],
   imports: [
     BrowserModule,

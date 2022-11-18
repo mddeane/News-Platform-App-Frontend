@@ -1,12 +1,14 @@
 .main-content-dark {
-    width: calc(100% - 199px);     /* Substract sidebar-left width from 100% */
+    /* width: calc(100% - 199px);  Substract sidebar-left width from 100% */
+    width: 100%;
+    height: 100%;
     border-top: 1px solid #6c757d; 
     border-bottom: 1px solid #6c757d; 
     border-left: 1px solid #6c757d; 
     border-right: 1px solid #6c757d; 
     color: white;
     background-color: #212529;
-    height: calc(100vh - 49px);     /* Subtract nav height */
+    /* height: calc(100vh - 49px);     Subtract nav height */
     float: left;
     overflow: auto;
 }

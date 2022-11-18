@@ -1,12 +1,14 @@
 .sidebar-left-dark {
     position: relative;
-    width: 199px;
+    /* width: 199px; */
+    width: 100%;
+    height: 100%;
     border-top: 1px solid #6c757d; 
     border-bottom: 1px solid #6c757d; 
     border-left: 1px solid #6c757d; 
     color: white;
     background-color: #343a40;
-    height: calc(100vh - 49px);     /* Subtract nav height */
+   /* height: calc(100vh - 49px);    Subtract nav height */
     float: left;
     overflow: auto;
 }
@@ -24,3 +26,9 @@
     font-size: 10px;;
 }
 
+.no-select {
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}

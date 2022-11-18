@@ -7,6 +7,8 @@ import { Component, OnInit } from '@angular/core';
 })
 export class SidebarLeftComponent implements OnInit {
 
+  sidebarLeftWidth: number = 399;
+
   constructor() { }
 
   ngOnInit(): void {

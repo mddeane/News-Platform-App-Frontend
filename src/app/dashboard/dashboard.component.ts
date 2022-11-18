@@ -1,3 +1,4 @@
+import { Functions } from './../../common/functions';
 import { Component, OnInit } from '@angular/core';
 
 @Component({
@@ -10,6 +11,6 @@ export class DashboardComponent implements OnInit {
   constructor() { }
 
   ngOnInit(): void {
-  }
 
+  }
 }
