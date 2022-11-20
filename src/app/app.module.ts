@@ -1,3 +1,4 @@
+import { FormsModule } from '@angular/forms';
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 
@@ -9,6 +10,9 @@ import { MainContentComponent } from './main-content/main-content.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { MaintenanceComponent } from './maintenance/maintenance.component';
 import { RundownComponent } from './rundown/rundown.component';
+import { RowComponent } from './row/row.component';
+import { OnEscKeyDirective } from './directives/on-esc-key.directive';
+import { OnEnterKeyDirective } from './directives/on-enter-key.directive';
 
 @NgModule({
   declarations: [
@@ -18,11 +22,15 @@ import { RundownComponent } from './rundown/rundown.component';
     MainContentComponent,
     DashboardComponent,
     MaintenanceComponent,
-    RundownComponent
+    RundownComponent,
+    RowComponent,
+    OnEscKeyDirective,
+    OnEnterKeyDirective
   ],
   imports: [
     BrowserModule,
-    AppRoutingModule
+    AppRoutingModule,
+    FormsModule
   ],
   providers: [],
   bootstrap: [AppComponent]

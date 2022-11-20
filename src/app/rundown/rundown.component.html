@@ -6,53 +6,49 @@
         <table class="table table-dark table-striped table-bordered">
             <thead>
                 <tr>
-                    <th [ngStyle]="{'width' : colWidths[0] + 'px'}" scope="col" class="cursor-pointer"
-                        data-bs-toggle="dropdown" aria-expanded="false">
+                    <!-- RUNDOWN MENU -->
+                    <th scope="col" class="col-menu text-center px-0" data-bs-toggle="dropdown" aria-expanded="false">
                         <div class="dropdown">
+                            <!-- RUNDOWN MENU ICON -->
                             <i class="bi bi-list"></i>
+                            <!-- RUNDOWN MENU OPTIONS -->
                             <ul class="dropdown-menu dropdown-menu-secondary">
-                                <li><button class="dropdown-item" type="button">Action</button></li>
-                                <li><button class="dropdown-item" type="button">Another action</button></li>
-                                <li><button class="dropdown-item" type="button">Something else here</button></li>
+                                <li><button class="dropdown-item" type="button">Rundown Option 1</button></li>
+                                <li><button class="dropdown-item" type="button">Rundown Option 2</button></li>
+                                <li><button class="dropdown-item" type="button">Rundown Option 3</button></li>
                             </ul>
                         </div>
                     </th>
-                    <th [ngStyle]="{'width' : colWidths[1] + 'px'}" scope="col" class="px-0 cursor-move">
-                        <i class="bi bi-three-dots-vertical"></i>
+                    <!-- ROW MOVE ICON -->
+                    <th scope="col" class="px-0 col-move text-center" style="cursor: default; font-size: .8em">
+                        <i class="bi bi-arrow-down-up"></i>
                     </th>
-                    <th [ngStyle]="{'width' : colWidths[2] + 'px'}" scope="col">
-                        <div style="position: relative;">
-                            <div>
-                                Page
-                            </div>
-                            <div class="cursor-col-resize"
-                                style="position: absolute; top: 0px; right: -10px; width: 10px; z-index: 10;"
-                                (mousedown)="activeColIndex=2; isMoveActive=true; startWidth=colWidths[2]">
-                                &nbsp;
-                            </div>
+                    <!-- LOCK MENU -->
+                    <th class="col-status">
+                        <div class="dropdown">
+                            <!-- LOCK ICON -->
+                            <i [class]="isLocked ? 'bi bi-lock' : 'bi bi-unlock'" class="cursor-pointer" id="lockMenu"
+                                data-bs-toggle="dropdown" aria-expanded="false"></i>
+                            <!-- LOCK MENU OPTIONS -->
+                            <ul class="dropdown-menu dropdown-menu-secondary" aria-labelledby="lockMenu">
+                                <li *ngIf="!isLocked"><button class="dropdown-item" type="button"
+                                        (click)="isLocked = true">Lock</button></li>
+                                <li *ngIf="isLocked"><button class="dropdown-item" type="button"
+                                        (click)="isLocked = false;">Unlock</button>
+                                </li>
+                            </ul>
                         </div>
                     </th>
-                    <th [ngStyle]="{'width' : colWidths[3] + 'px'}" scope="col">
-                        <div style="position: relative;">
+                    <!-- HEADINGS -->
+                    <th *ngFor="let heading of headings; let i = index" [ngStyle]="{'width' : colWidths[i] + 'px'}"
+                        scope="col">
+                        <div class="position-relative">
                             <div>
-                                Slug
+                                {{heading}}
                             </div>
-                            <div class="cursor-col-resize"
-                                style="position: absolute; top: 0px; right: -10px; width: 10px; z-index: 10;"
-                                (mousedown)="activeColIndex=3; isMoveActive=true; startWidth=colWidths[3];">
-                                &nbsp;
-                            </div>
-                        </div>
-                    </th>
-                    <th [ngStyle]="{'width' : colWidths[4] + 'px'}" scope="col">
-                        <div style="position: relative;">
-                            <div>
-                                Segment
-
-                            </div>
-                            <div class="cursor-col-resize"
-                                style="position: absolute; top: 0px; right: -10px; width: 10px; z-index: 10;"
-                                (mousedown)="activeColIndex=4; isMoveActive=true; startWidth=colWidths[4]">
+                            <!-- RESIZE DIV -->
+                            <div class="col-resize" title="Resize column"
+                                (mousedown)="activeColIndex=(i); isMoveActive=true; startWidth=colWidths[activeColIndex]">
                                 &nbsp;
                             </div>
                         </div>
@@ -60,38 +56,113 @@
                 </tr>
             </thead>
             <tbody>
-                <tr>
-                    <td></td>
-                    <td></td>
+                <!-- STORY ROWS -->
+                <tr *ngFor="let row of rows; let i = index" #rowElement
+                    (dragstart)="handleDragstart($event, rowElement, row, i)"
+                    (dragend)="handleDragend($event, rowElement, row, i)"
+                    (dragenter)="handleDragenter($event, rowElement, row, i)"
+                    (dragleave)="handleDragleave($event, rowElement, row, i)"
+                    (dragover)="handleDragover($event, rowElement, row, i)"
+                    (drop)="handleDrop($event, rowElement, row, i)"
+                    [class]="i == dragActiveIndex || i == dragStartIndex ? 'row-highlight' : 'no-highlight'">
+                    <!-- ROW MENU -->
+                    <td class="text-center" class="cursor-pointer text-center" data-bs-toggle="dropdown"
+                        aria-expanded="false">
+                        <div class="dropdown" draggable="true">
+                            <!-- ROW MENU ICON -->
+                            <i class="bi bi-list"></i>
+                            <!-- ROW MENU OPTIONS-->
+                            <ul class="dropdown-menu dropdown-menu-secondary">
+                                <li><button class="dropdown-item" type="button" data-bs-toggle="modal"
+                                        data-bs-target="#storyModal" (click)="storyModalRow = row">Open Story</button>
+                                </li>
+                                <li><button class="dropdown-item" [class]="i==0 ? 'disabled' : ''" type="button"
+                                        (click)="moveRow(i, (i-1)); setRowSpans(rows); !isLocked ? setPageNumbers(rows) : '';"><i
+                                            class="bi bi-arrow-up"></i> Move
+                                        Up</button></li>
+                                <li><button class="dropdown-item" type="button"
+                                        [class]="i==(rows.length - 1) ? 'disabled' : ''" type="button"
+                                        (click)="moveRow(i, (i+1)); setRowSpans(rows); !isLocked ? setPageNumbers(rows) : '';"><i
+                                            class="bi bi-arrow-down"></i> Move
+                                        Down</button></li>
+                            </ul>
+                        </div>
+                        <!-- ROW MOVE -->
+                    <td scope="col" class="px-0 cursor-move text-center" draggable="true">
+                        <!-- ROW MOVE ICON -->
+                        <i class="bi bi-three-dots-vertical"></i>
+                    </td>
+                    <!-- ROW STATUS -->
+                    <td class="col-status text-center p-1" draggable="true">
+                        <!-- ROW STATUS DROPDOWN -->
+                        <div class="dropdown py-1"
+                            [class]="!row.body ? setStatusBg('unwritten') : setStatusBg(row.status)">
+                            <!-- ROW STATUS ICON -->
+                            <i [class]="!row.body ? setStatusIcon('unwritten') : setStatusIcon(row.status)"
+                                class="cursor-pointer" id="statusMenu" data-bs-toggle="dropdown"
+                                aria-expanded="false"></i>
+                            <!-- ROW STATUS MENU OPTIONS -->
+                            <ul class=" dropdown-menu dropdown-menu-secondary" aria-labelledby="statusMenu">
+                                <li><button class="dropdown-item"
+                                        [class]="row.status=='approved' ? 'disabled' : !row.body ? 'disabled': ''"
+                                        type="button" (click)="row.status='approved'">Approve</button></li>
+                                <li>
+                                    <button class="dropdown-item" type="button"
+                                        [class]="row.status=='ready' ? 'disabled' : !row.body ? 'disabled' : row.status == 'approved' ? 'disabled' : ''"
+                                        (click)="row.status='ready'">Ready for
+                                        Approval</button>
+                                </li>
+                                <li>
+                                    <button class="dropdown-item"
+                                        [class]="row.status=='unapproved' ? 'disabled' : !row.body ? 'disabled' : ''"
+                                        type="button" (click)="row.status='unapproved'">Unapprove</button>
+                                </li>
+                            </ul>
+                        </div>
+                    </td>
+                    <!-- ROW PAGE NUMBER -->
                     <td>
-                        <div style="position: relative;">
-                            <div contenteditable="true">
-                                A1
+                        <div class=" position-relative">
+                            <div appOnEnterKey appOnEscKey previousValue="{{row.pageNumber}}" contenteditable="true"
+                                [class]="isLocked ? 'fw-bold fst-italic' : ''">
+                                {{row.pageNumber}}
                             </div>
-                            <div class="cursor-col-resize"
-                                style="position: absolute; top: 0px; right: -10px; width: 10px; z-index: 10;">
+                            <div class="col-resize" title="Resize column"
+                                (mousedown)="activeColIndex=0; isMoveActive=true; startWidth=colWidths[0]">
+                                &nbsp;
+                            </div>
+                        </div>
+                    </td>
+                    <td *ngIf="row.slugRowSpan > 0" [attr.rowspan]="row.slugRowSpan"
+                        [ngStyle]="{'vertical-align' : row.slugRowSpan > 1 ? 'middle' : ''}">
+                        <div class="position-relative">
+                            <div appOnEnterKey appOnEscKey previousValue="{{row.storySlug}}" contenteditable="true">
+                                {{row.storySlug}}
+                            </div>
+                            <div class="col-resize" title="Resize column"
+                                (mousedown)="activeColIndex=1; isMoveActive=true; startWidth=colWidths[1]">
                                 &nbsp;
                             </div>
                         </div>
                     </td>
                     <td>
-                        <div style="position: relative;">
-                            <div contenteditable="true">
-                                Story Slug 1
+                        <div class="position-relative">
+                            <div contenteditable="true" appOnEnterKey appOnEscKey previousValue="{{row.segment}}">
+                                {{row.segment}}
                             </div>
-                            <div class="cursor-col-resize"
-                                style="position: absolute; top: 0px; right: -10px; width: 10px; z-index: 10;">
+                            <div class="col-resize" title="Resize column"
+                                (mousedown)="activeColIndex=2; isMoveActive=true; startWidth=colWidths[2]">
                                 &nbsp;
                             </div>
                         </div>
                     </td>
                     <td>
-                        <div style="position: relative;">
-                            <div contenteditable="true">
-                                INTRO VO
+                        <div class="position-relative">
+                            <div contenteditable="true" appOnEnterKey appOnEscKey previousValue="{{row.anchor}}">
+                                {{row.anchor}}
                             </div>
-                            <div class="cursor-col-resize"
-                                style="position: absolute; top: 0px; right: -10px; width: 10px; z-index: 10;">
+                            <div class="col-resize" title="Resize column"
+                                (mousedown)="activeColIndex=3; isMoveActive=true; startWidth=colWidths[3]">
                                 &nbsp;
                             </div>
                         </div>
@@ -99,5 +170,52 @@
                 </tr>
             </tbody>
         </table>
+    </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="storyModal" tabindex="-1" aria-labelledby="storyModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-fullscreen">
+        <div class="modal-content bg-dark">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="storyModalLabel">{{storyModalRow.pageNumber}} -
+                    {{storyModalRow.storySlug}}</h1>
+                <div class="dropdown py-1 col-status"
+                    [class]="!storyModalRow.body ? setStatusBg('unwritten') : setStatusBg(storyModalRow.status)">
+                    <!-- ROW STATUS ICON -->
+                    <i [class]="!storyModalRow.body ? setStatusIcon('unwritten') : setStatusIcon(storyModalRow.status)"
+                        class="cursor-pointer" id="statusMenu" data-bs-toggle="dropdown" aria-expanded="false"></i>
+                    <!-- ROW STATUS MENU OPTIONS -->
+                    <ul class=" dropdown-menu dropdown-menu-secondary" aria-labelledby="statusMenu">
+                        <li><button class="dropdown-item"
+                                [class]="storyModalRow.status=='approved' ? 'disabled' : !storyModalRow.body ? 'disabled': ''"
+                                type="button" (click)="storyModalRow.status='approved'">Approve</button></li>
+                        <li>
+                            <button class="dropdown-item" type="button"
+                                [class]="storyModalRow.status=='ready' ? 'disabled' : !storyModalRow.body ? 'disabled' : storyModalRow.status == 'approved' ? 'disabled' : ''"
+                                (click)="storyModalRow.status='ready'">Ready for
+                                Approval</button>
+                        </li>
+                        <li>
+                            <button class="dropdown-item"
+                                [class]="storyModalRow.status=='unapproved' ? 'disabled' : !storyModalRow.body ? 'disabled' : ''"
+                                type="button" (click)="storyModalRow.status='unapproved'">Unapprove</button>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="modal-body">
+                <div class="container h-100">
+                    <textarea #modalBody appOnEnterKey contenteditable="true"
+                        class="mx-3 p-3 w-100 h-100 bg-dark text-white" style="resize: none;" name="storyBody"
+                        [value]="storyModalRow.body"></textarea>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-light" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" (click)="storyModalRow.body=modalBody.value">Save
+                    changes</button>
+            </div>
+        </div>
     </div>
 </div>

@@ -27,3 +27,38 @@ table th, td {
     -ms-user-select: none;
     user-select: none;
 }
+
+.col-menu {
+    cursor: pointer;
+    width: 33px;
+}
+
+.col-resize {
+    position: absolute; 
+    top: 0px; 
+    right: -10px; 
+    width: 10px; 
+    z-index: 10;
+    cursor: col-resize;
+}
+
+.col-status {
+    width: 33px;
+    font-size: 1.5em;
+    line-height: 1em;
+    text-align: center;
+    /* cursor: pointer; */
+}
+
+.col-move {
+    width: 25px;
+    cursor: move;
+}
+
+.row-highlight {
+    outline: 2px solid yellow;
+}
+
+.no-highlight {
+    outline: 0px;
+}
