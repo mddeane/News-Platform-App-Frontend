@@ -1,0 +1,6 @@
+<div>
+    <div #writer contenteditable="true" appOnEnterKey appOnEscKey previousValue="{{row.writer.username}}"
+        (blur)="row.writer.username=writer.innerText;">
+        {{row.writer.username}}
+    </div>
+</div>

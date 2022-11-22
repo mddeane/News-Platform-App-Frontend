@@ -1,6 +1,8 @@
+import { RundownService } from './rundown.service';
 import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Row } from '../row/row.model';
+import { User } from '../user/user.model';
 
 
 @Component({
@@ -10,7 +12,7 @@ import { Row } from '../row/row.model';
 })
 export class RundownComponent implements OnInit {
 
-  colWidths: number[] = [50, 200, 150, 100];
+  pageCell?: HTMLElement;
 
   xPos: number = 0;
   yPos: number = 0;
@@ -24,6 +26,8 @@ export class RundownComponent implements OnInit {
   xEnd: number = 0;
   yEnd: number = 0;
 
+  tableHeight: number = 0;
+
   activeColIndex: number = -1;
 
   isMoveActive: boolean = false;
@@ -32,31 +36,43 @@ export class RundownComponent implements OnInit {
 
   previousSlug: string = "";
 
-  storyModalRow: Row = new Row(-1, "", "", "", "", "", "", 1);
+  storyModalRow: Row = new Row(-1, "", "", "", "", "", "", "", "", 1, new User(-1, "", "", "", "", ""), new Date(), new User(-1, "", "", "", "", ""), new Date(), -1, new User(-1, "", "", "", "", ""), new Date(), new Date(), "", "");
+
+  jdoe: User = new User(1, "John", "Doe", "jdoe", "password", "admin");
+  jadoe: User = new User(2, "Jane", "Doe", "jadoe", "password", "producer");
+  mdavis: User = new User(3, "Miles", "Davis", "mdavis", "password", "writer");
 
   rows: Row[] = [];
 
   showRows: Row[] = [];
 
-  headings: string[] = ["Page", "Slug", "Segment", "Anchor"];
+  colWidths: number[] = [50, 200, 150, 100, 150, 150, 100, 150, 150, 200];
+
+  headings: string[] = ["Page", "Slug", "Segment", "Anchor", "Est Time", "Act Time", "Writer", "Back Time", "Front Time", "Notes"];
+
+  cells: string[] = ["Segment", "Anchor", "Est Time", "Act Time", "Writer", "Back Time", "Front Time", "Notes"];
 
   rowsFromDb: Row[] = [
-    new Row(1, "", "Story Slug 1", "INTRO VO", "AB CD", "Contains words 1", "unapproved", 1),
-    new Row(2, "", "Story Slug 2", "INTRO PKG", "AB CD", "", "unapproved", 1),
-    new Row(3, "", "Story Slug 3", "INTRO PKG", "CD", "Contains words 3", "unapproved", 1),
-    new Row(4, "", "Story Slug Same", "INTRO", "AB", "Contains words 4", "unapproved", 1),
-    new Row(5, "", "Story Slug Same", "PKG", "", "Contains words 5", "unapproved", 1),
-    new Row(6, "", "Story Slug Same", "TAG", "AB", "Contains words 6", "unapproved", 1),
-    new Row(7, "", "Story Slug 7", "INTRO PKG", "AB", "Contains words 7", "unapproved", 1)
+    new Row(1, "", "Story Slug 1", "INTRO VO", "AB CD", "", "", "Contains words 1", "unapproved", 1, this.jdoe, new Date(), this.jdoe, new Date(), -1, this.jdoe, new Date(), new Date(), "These are notes.", ""),
+
+    new Row(2, "", "Story Slug 2", "INTRO PKG", "AB CD", "", "", "", "unapproved", 1, this.jadoe, new Date(), this.jdoe, new Date(), -1, this.jdoe, new Date(), new Date(), "", ""),
+
+    new Row(3, "", "Story Slug 3", "INTRO PKG", "CD", "", "", "Contains words 3", "unapproved", 1, this.jadoe, new Date(), this.jadoe, new Date(), -1, this.jadoe, new Date(), new Date(), "", ""),
+
+    new Row(4, "", "Story Slug Same", "INTRO", "AB", "", "", "Contains words 4", "unapproved", 1, this.mdavis, new Date(), this.mdavis, new Date(), -1, this.mdavis, new Date(), new Date(), "", ""),
+
+    new Row(5, "", "Story Slug Same", "PKG", "", "", "", "Contains words 5", "unapproved", 1, this.jdoe, new Date(), this.jdoe, new Date(), -1, this.jdoe, new Date(), new Date(), "", ""),
+
+    new Row(6, "", "Story Slug Same", "TAG", "AB", "", "", "Contains words 6", "unapproved", 1, this.jdoe, new Date(), this.jdoe, new Date(), -1, this.jdoe, new Date(), new Date(), "", ""),
+
+    new Row(7, "", "Story Slug 7", "INTRO PKG", "AB", "", "", "Contains words 7", "unapproved", 1, this.jdoe, new Date(), this.jdoe, new Date(), -1, this.jdoe, new Date(), new Date(), "", "")
   ];
 
-  constructor() { }
+  constructor(public rundownService: RundownService) { }
 
   ngOnInit(): void {
     this.rows = this.setRows(this.rowsFromDb);
-    this.showRows = this.setRowSpans(this.rows);
-
-    // this.setSlugRowSpan(this.rows);
+    this.showRows = this.rundownService.setRowSpans(this.rows);
   }
 
   // @HostListener('mousemove', ['$event'])
@@ -158,7 +174,7 @@ export class RundownComponent implements OnInit {
       row.slugRowSpan = 1;
     }
     this.moveRow(this.dragStartIndex, this.dragActiveIndex);
-    this.setRowSpans(this.rows);
+    this.rundownService.setRowSpans(this.rows);
     event.stopPropagation(); // stops the browser from redirecting.
     return false;
   }
@@ -175,49 +191,63 @@ export class RundownComponent implements OnInit {
     }
   }
 
+  updateRows() {
+    //this.rows = this.setPageNumbers(rows);
+    //this.rows = this.setPageNumbers(this.rows);
+    for (let row of this.rows) {
+      row.slugRowSpan = 1;
+      row.pageNumber = "1";
+    }
+    this.rundownService.setRowSpans(this.rows);
+    !this.isLocked ? this.setPageNumbers(this.rows) : '';
+  }
+
   setRows(rows: Row[]): Row[] {
     let orderedPages: Row[] = this.setPageNumbers(rows);
     return orderedPages;
   }
 
   setShowRows(rows: Row[]): Row[] {
-    let showRowsWithRowSpans: Row[] = this.setRowSpans(rows);
+    let showRowsWithRowSpans: Row[] = this.rundownService.setRowSpans(rows);
     return showRowsWithRowSpans;
   }
 
   setPageNumbers(rows: Row[]): Row[] {
+    console.log("inside setPageNumbers");
     let blockLetter: string = "A";
     let pageCounter: number = 1;
 
     for (let row of rows) {
       row.pageNumber = blockLetter + pageCounter;
+      console.log("row.pageNumber: " + row.pageNumber);
       pageCounter++;
     }
     return rows;
   }
 
-  setRowSpans(rows: Row[]) {
-    let previousSlug = "";
-    let spans = 1;
-    for (let i = 0; i < rows.length; i++) {
-      if (i == 0) {
-        previousSlug = rows[i].storySlug;
-        rows[i].slugRowSpan = spans;
-      } else {
-        if (rows[i].storySlug != previousSlug) {
-          previousSlug = rows[i].storySlug;
-          spans = 1;
-          rows[i].slugRowSpan = spans;
-        } else {
-          rows[i].slugRowSpan = 0;
-          rows[i - spans].slugRowSpan = spans + 1;
-          spans++;
-        }
-      }
-    }
-    // for (let row of rows) {
-    //   console.log("Row span: " + row.slugRowSpan);
-    // }
-    return rows;
-  }
+  // setRowSpans(rows: Row[]) {
+
+  //   let previousSlug = "";
+  //   let spans = 1;
+  //   for (let i = 0; i < rows.length; i++) {
+  //     if (i == 0) {
+  //       previousSlug = rows[i].storySlug;
+  //       rows[i].slugRowSpan = spans;
+  //     } else {
+  //       if (rows[i].storySlug != previousSlug) {
+  //         previousSlug = rows[i].storySlug;
+  //         spans = 1;
+  //         rows[i].slugRowSpan = spans;
+  //       } else {
+  //         rows[i].slugRowSpan = 0;
+  //         rows[i - spans].slugRowSpan = spans + 1;
+  //         spans++;
+  //       }
+  //     }
+  //   }
+  //   // for (let row of rows) {
+  //   //   console.log("Row span: " + row.slugRowSpan);
+  //   // }
+  //   return rows;
+  // }
 }

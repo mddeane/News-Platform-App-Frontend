@@ -1,0 +1,6 @@
+<div>
+    <div #anchor contenteditable="true" appOnEnterKey appOnEscKey previousValue="{{row.anchor}}"
+        (blur)="row.anchor=anchor.innerText;">
+        {{row.anchor}}
+    </div>
+</div>

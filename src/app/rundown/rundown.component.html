@@ -2,15 +2,15 @@
     (mousemove)="xPos=getMoveX($event); isMoveActive ? colWidths[activeColIndex]=(startWidth + xPos - xStart) : '';"
     (mousedown)="xStart=xPos" (mouseup)="isMoveActive=false; activeColIndex=-1" (mouseleave)="isMoveActive=false"
     (dragend)="isMoveActive=false">
-    <div class="row mt-2">
-        <table class="table table-dark table-striped table-bordered">
+    <div #tableContainer class="row mt-2">
+        <table #table class="table table-dark table-striped table-bordered">
             <thead>
                 <tr>
                     <!-- RUNDOWN MENU -->
                     <th scope="col" class="col-menu text-center px-0" data-bs-toggle="dropdown" aria-expanded="false">
                         <div class="dropdown">
                             <!-- RUNDOWN MENU ICON -->
-                            <i class="bi bi-list"></i>
+                            <i class="bi bi-caret-down-square"></i>
                             <!-- RUNDOWN MENU OPTIONS -->
                             <ul class="dropdown-menu dropdown-menu-secondary">
                                 <li><button class="dropdown-item" type="button">Rundown Option 1</button></li>
@@ -30,11 +30,11 @@
                             <i [class]="isLocked ? 'bi bi-lock' : 'bi bi-unlock'" class="cursor-pointer" id="lockMenu"
                                 data-bs-toggle="dropdown" aria-expanded="false"></i>
                             <!-- LOCK MENU OPTIONS -->
-                            <ul class="dropdown-menu dropdown-menu-secondary" aria-labelledby="lockMenu">
+                            <ul class=" dropdown-menu dropdown-menu-secondary" aria-labelledby="lockMenu">
                                 <li *ngIf="!isLocked"><button class="dropdown-item" type="button"
                                         (click)="isLocked = true">Lock</button></li>
                                 <li *ngIf="isLocked"><button class="dropdown-item" type="button"
-                                        (click)="isLocked = false;">Unlock</button>
+                                        (click)="isLocked = false; setPageNumbers(rows)">Unlock</button>
                                 </li>
                             </ul>
                         </div>
@@ -47,9 +47,10 @@
                                 {{heading}}
                             </div>
                             <!-- RESIZE DIV -->
-                            <div class="col-resize" title="Resize column"
+                            <div #resize class="col-resize" title="Resize column"
+                                [ngStyle]="{'height':table.offsetHeight +'px', 'top': '-0.5rem'}"
                                 (mousedown)="activeColIndex=(i); isMoveActive=true; startWidth=colWidths[activeColIndex]">
-                                &nbsp;
+
                             </div>
                         </div>
                     </th>
@@ -70,19 +71,19 @@
                         aria-expanded="false">
                         <div class="dropdown" draggable="true">
                             <!-- ROW MENU ICON -->
-                            <i class="bi bi-list"></i>
+                            <i class="bi bi-caret-down-fill"></i>
                             <!-- ROW MENU OPTIONS-->
                             <ul class="dropdown-menu dropdown-menu-secondary">
                                 <li><button class="dropdown-item" type="button" data-bs-toggle="modal"
                                         data-bs-target="#storyModal" (click)="storyModalRow = row">Open Story</button>
                                 </li>
                                 <li><button class="dropdown-item" [class]="i==0 ? 'disabled' : ''" type="button"
-                                        (click)="moveRow(i, (i-1)); setRowSpans(rows); !isLocked ? setPageNumbers(rows) : '';"><i
+                                        (click)="moveRow(i, (i-1)); rundownService.setRowSpans(rows); !isLocked ? setPageNumbers(rows) : '';"><i
                                             class="bi bi-arrow-up"></i> Move
                                         Up</button></li>
                                 <li><button class="dropdown-item" type="button"
                                         [class]="i==(rows.length - 1) ? 'disabled' : ''" type="button"
-                                        (click)="moveRow(i, (i+1)); setRowSpans(rows); !isLocked ? setPageNumbers(rows) : '';"><i
+                                        (click)="moveRow(i, (i+1)); rundownService.setRowSpans(rows); !isLocked ? setPageNumbers(rows) : '';"><i
                                             class="bi bi-arrow-down"></i> Move
                                         Down</button></li>
                             </ul>
@@ -122,50 +123,113 @@
                     </td>
                     <!-- ROW PAGE NUMBER -->
                     <td>
-                        <div class=" position-relative">
-                            <div appOnEnterKey appOnEscKey previousValue="{{row.pageNumber}}" contenteditable="true"
-                                [class]="isLocked ? 'fw-bold fst-italic' : ''">
+                        <app-page-cell [row]=row [isLocked]=isLocked></app-page-cell>
+                        <!-- <div>
+                            <div #pageNumber appOnEnterKey appOnEscKey previousValue="{{row.pageNumber}}"
+                                [attr.contenteditable]="isLocked ? 'false' : 'true'"
+                                [class]="isLocked ? 'fw-bold fst-italic' : ''"
+                                (blur)="row.pageNumber=pageNumber.innerText;">
                                 {{row.pageNumber}}
                             </div>
-                            <div class="col-resize" title="Resize column"
-                                (mousedown)="activeColIndex=0; isMoveActive=true; startWidth=colWidths[0]">
-                                &nbsp;
-                            </div>
-                        </div>
+                        </div> -->
                     </td>
                     <td *ngIf="row.slugRowSpan > 0" [attr.rowspan]="row.slugRowSpan"
                         [ngStyle]="{'vertical-align' : row.slugRowSpan > 1 ? 'middle' : ''}">
-                        <div class="position-relative">
-                            <div appOnEnterKey appOnEscKey previousValue="{{row.storySlug}}" contenteditable="true">
+                        <app-slug-cell [row]=row [rows]=rows></app-slug-cell>
+                        <!-- <div>
+                            <div #storySlug appOnEnterKey appOnEscKey previousValue="{{row.storySlug}}"
+                                contenteditable="true" (blur)="row.storySlug = storySlug.innerText;  setRowSpans(rows)">
                                 {{row.storySlug}}
                             </div>
-                            <div class="col-resize" title="Resize column"
-                                (mousedown)="activeColIndex=1; isMoveActive=true; startWidth=colWidths[1]">
-                                &nbsp;
-                            </div>
-                        </div>
+                        </div> -->
                     </td>
-                    <td>
-                        <div class="position-relative">
-                            <div contenteditable="true" appOnEnterKey appOnEscKey previousValue="{{row.segment}}">
+                    <!-- <td>
+                        <app-segment-cell [row]=row></app-segment-cell>
+                        <div>
+                            <div #segment contenteditable="true" appOnEnterKey appOnEscKey
+                                previousValue="{{row.segment}}" (blur)="row.segment=segment.innerText;">
                                 {{row.segment}}
                             </div>
-                            <div class="col-resize" title="Resize column"
-                                (mousedown)="activeColIndex=2; isMoveActive=true; startWidth=colWidths[2]">
-                                &nbsp;
+                        </div>
+                    </td>
+                    <td>
+                        <app-anchor-cell [row]=row></app-anchor-cell>
+                        <div>
+                            <div #anchor contenteditable="true" appOnEnterKey appOnEscKey previousValue="{{row.anchor}}"
+                                (blur)="row.anchor=anchor.innerText;">
+                                {{row.anchor}}
                             </div>
                         </div>
                     </td>
                     <td>
-                        <div class="position-relative">
-                            <div contenteditable="true" appOnEnterKey appOnEscKey previousValue="{{row.anchor}}">
-                                {{row.anchor}}
-                            </div>
-                            <div class="col-resize" title="Resize column"
-                                (mousedown)="activeColIndex=3; isMoveActive=true; startWidth=colWidths[3]">
-                                &nbsp;
+                        <app-est-time-cell [row]=row>
+                        </app-est-time-cell>
+                        <div>
+                            <div #estTime contenteditable="true" appOnEnterKey appOnEscKey
+                                previousValue="{{row.estTime}}" (blur)="row.estTime=estTime.innerText;">
+                                {{row.estTime}}
                             </div>
                         </div>
+                    </td>
+                    <td>
+                        <app-act-time-cell [row]=row></app-act-time-cell>
+                        <div>
+                            <div #actTime contenteditable="true" appOnEnterKey appOnEscKey
+                                previousValue="{{row.actTime}}" (blur)="row.actTime=actTime.innerText;">
+                                {{row.actTime}}
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        <app-writer-cell [row]=row></app-writer-cell>
+                        <div>
+                            <div #writer contenteditable="true" appOnEnterKey appOnEscKey
+                                previousValue="{{row.writer.username}}" (blur)="row.writer.username=writer.innerText;">
+                                {{row.writer.username}}
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        <app-back-time-cell [row]=row></app-back-time-cell>
+                        <div>
+                            <div #backTime contenteditable="true" appOnEnterKey appOnEscKey
+                                previousValue="{{row.backTime | date: 'hh:mm:ss'}}">
+                                {{row.backTime | date: 'hh:mm:ss'}}
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        <app-front-time-cell [row]=row>
+                        </app-front-time-cell>
+                        <div>
+                            <div #frontTime contenteditable="true" appOnEnterKey appOnEscKey
+                                previousValue="{{row.frontTime | date: 'hh:mm:ss'}}">
+                                {{row.frontTime | date: 'hh:mm:ss'}}
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        <app-notes-cell [row]=row>
+                        </app-notes-cell>
+                        <div>
+                            <div #notes contenteditable="true" appOnEnterKey appOnEscKey previousValue="{{row.notes}}"
+                                (blur)="row.notes=notes.innerText">
+                                {{row.notes}}
+                            </div>
+                        </div>
+                    </td> -->
+                    <td *ngFor="let cell of cells">
+                        <app-segment-cell *ngIf="cell=='Segment'" [row]=row></app-segment-cell>
+                        <app-anchor-cell *ngIf="cell=='Anchor'" [row]=row></app-anchor-cell>
+                        <app-est-time-cell *ngIf="cell=='Est Time'" [row]=row>
+                        </app-est-time-cell>
+                        <app-act-time-cell *ngIf="cell=='Act Time'" [row]=row></app-act-time-cell>
+                        <app-writer-cell *ngIf="cell=='Writer'" [row]=row></app-writer-cell>
+                        <app-back-time-cell *ngIf="cell=='Back Time'" [row]=row></app-back-time-cell>
+                        <app-front-time-cell *ngIf="cell=='Front Time'" [row]=row>
+                        </app-front-time-cell>
+                        <app-notes-cell *ngIf="cell=='Notes'" [row]=row>
+                        </app-notes-cell>
                     </td>
                 </tr>
             </tbody>
@@ -218,4 +282,28 @@
             </div>
         </div>
     </div>
+</div>
+<!-- <button class="btn btn-primary" (click)="updateRows()">Test</button>
+<p>Table Height: {{table.offsetHeight}}</p> -->
+
+<p>Page Cell: {{pageCell}}</p>
+
+<div *ngFor="let row of rows">
+    <p>
+        {{row.rowId}},
+        {{row.pageNumber}},
+        {{row.storySlug}},
+        {{row.segment}},
+        {{row.anchor}},
+        {{row.estTime}},
+        {{row.actTime}},
+        {{row.writer}},
+        {{row.backTime}},
+        {{row.frontTime}},
+        {{row.notes}},
+        {{row.body}},
+        {{row.status}},
+        {{row.slugRowSpan}},
+    </p>
+
 </div>

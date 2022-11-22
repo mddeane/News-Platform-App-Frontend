@@ -1,0 +1,6 @@
+<div>
+    <div #segment contenteditable="true" appOnEnterKey appOnEscKey previousValue="{{row.segment}}"
+        (blur)="row.segment=segment.innerText;">
+        {{row.segment}}
+    </div>
+</div>

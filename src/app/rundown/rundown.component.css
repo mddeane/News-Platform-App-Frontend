@@ -4,11 +4,6 @@ table {
     table-layout: fixed;
 }
 
-table th, td {
-    white-space: nowrap;
-    border: 1px solid #6c757d;
-}
-
 .cursor-move {
     cursor: move;
 }
@@ -40,6 +35,7 @@ table th, td {
     width: 10px; 
     z-index: 10;
     cursor: col-resize;
+    /* height: 100%; */
 }
 
 .col-status {
@@ -61,4 +57,13 @@ table th, td {
 
 .no-highlight {
     outline: 0px;
+}
+
+table th, td {
+    border: 1px solid #6c757d;
+}
+
+
+td div div, th div div  {
+    white-space: pre-line
 }

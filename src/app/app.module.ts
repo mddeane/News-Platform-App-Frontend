@@ -13,6 +13,17 @@ import { RundownComponent } from './rundown/rundown.component';
 import { RowComponent } from './row/row.component';
 import { OnEscKeyDirective } from './directives/on-esc-key.directive';
 import { OnEnterKeyDirective } from './directives/on-enter-key.directive';
+import { UserComponent } from './user/user.component';
+import { PageCellComponent } from './row/cell/page-cell/page-cell.component';
+import { SlugCellComponent } from './row/cell/slug-cell/slug-cell.component';
+import { SegmentCellComponent } from './row/cell/segment-cell/segment-cell.component';
+import { AnchorCellComponent } from './row/cell/anchor-cell/anchor-cell.component';
+import { EstTimeCellComponent } from './row/cell/est-time-cell/est-time-cell.component';
+import { ActTimeCellComponent } from './row/cell/act-time-cell/act-time-cell.component';
+import { WriterCellComponent } from './row/cell/writer-cell/writer-cell.component';
+import { BackTimeCellComponent } from './row/cell/back-time-cell/back-time-cell.component';
+import { FrontTimeCellComponent } from './row/cell/front-time-cell/front-time-cell.component';
+import { NotesCellComponent } from './row/cell/notes-cell/notes-cell.component';
 
 @NgModule({
   declarations: [
@@ -25,7 +36,18 @@ import { OnEnterKeyDirective } from './directives/on-enter-key.directive';
     RundownComponent,
     RowComponent,
     OnEscKeyDirective,
-    OnEnterKeyDirective
+    OnEnterKeyDirective,
+    UserComponent,
+    PageCellComponent,
+    SlugCellComponent,
+    SegmentCellComponent,
+    AnchorCellComponent,
+    EstTimeCellComponent,
+    ActTimeCellComponent,
+    WriterCellComponent,
+    BackTimeCellComponent,
+    FrontTimeCellComponent,
+    NotesCellComponent
   ],
   imports: [
     BrowserModule,

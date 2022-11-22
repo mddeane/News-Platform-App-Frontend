@@ -25,8 +25,7 @@ export class OnEscKeyDirective {
    */
   @HostListener('keydown.esc') escBlur() {
     this.el.nativeElement.innerText = this.escValue;
-    this.el.nativeElement
-      .blur();
+    this.el.nativeElement.blur();
   }
 
 }

@@ -1,0 +1,6 @@
+<div>
+    <div #notes contenteditable="true" appOnEnterKey appOnEscKey previousValue="{{row.notes}}"
+        (blur)="row.notes=notes.innerText">
+        {{row.notes}}
+    </div>
+</div>

@@ -1,0 +1,7 @@
+<div>
+    <div #pageNumber appOnEnterKey appOnEscKey previousValue="{{row.pageNumber}}"
+        [attr.contenteditable]="isLocked ? 'false' : 'true'" [class]="isLocked ? 'fw-bold fst-italic' : ''"
+        (blur)="row.pageNumber=pageNumber.innerText; newPageNumber.emit(row.pageNumber)">
+        {{row.pageNumber}}
+    </div>
+</div>

@@ -1,0 +1,6 @@
+<div>
+    <div #estTime contenteditable="true" appOnEnterKey appOnEscKey previousValue="{{row.estTime}}"
+        (blur)="row.estTime=estTime.innerText;">
+        {{row.estTime}}
+    </div>
+</div>
