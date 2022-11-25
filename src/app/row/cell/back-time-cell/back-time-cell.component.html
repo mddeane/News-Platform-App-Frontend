@@ -1,5 +1,6 @@
-<div>
-    <div #backTime contenteditable="true" appOnEnterKey appOnEscKey previousValue="{{row.backTime | date: 'hh:mm:ss'}}">
-        {{row.backTime | date: 'hh:mm:ss'}}
+<div style="float: right">
+    <div #backTime contenteditable="false" appOnEnterKey appOnEscKey
+        previousValue="{{row.backTime | date: 'hh:mm:ss'}}">
+        {{row.backTime | date: 'h:mm:ss a'}}
     </div>
 </div>

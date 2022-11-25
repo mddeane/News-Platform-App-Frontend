@@ -1,6 +1,16 @@
-<div>
-    <div #estTime contenteditable="true" appOnEnterKey appOnEscKey previousValue="{{row.estTime}}"
-        (blur)="row.estTime=estTime.innerText;">
-        {{row.estTime}}
+<div class="w-100 text-end" style="white-space: nowrap;">
+    <!-- <div #estTime contenteditable=" true" appOnEnterKey appOnEscKey previousValue="{{row.estTime}}"
+    (blur)="row.estTime=estTime.innerText;">
+    {{row.estTime}}
+</div> -->
+    <!-- <div #estHours contenteditable="true" appOnEnterKey appOnEscKey previousValue="{{hoursString}}"
+        (blur)="row.estTime=hoursString + ':' + minutesString + '' + secondsString" style="width: 25px; float: left; overflow: hidden;">
+        {{hoursString}}
     </div>
-</div>
+    <div style="width: 6px; float: left; text-align: left;">:</div> -->
+    <div style="float: right">
+        <div #estTime contenteditable="true" appOnEnterKey appOnEscKey previousValue="{{row.estTime}}" (blur)="''"
+            style="float: left; overflow: hidden; white-space: nowrap;" (blur)="row.estTime = estTime.innerText">
+            {{row.estTime}}
+        </div>
+    </div>

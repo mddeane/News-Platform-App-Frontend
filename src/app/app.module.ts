@@ -24,6 +24,8 @@ import { WriterCellComponent } from './row/cell/writer-cell/writer-cell.componen
 import { BackTimeCellComponent } from './row/cell/back-time-cell/back-time-cell.component';
 import { FrontTimeCellComponent } from './row/cell/front-time-cell/front-time-cell.component';
 import { NotesCellComponent } from './row/cell/notes-cell/notes-cell.component';
+import { StoryModalComponent } from './story-modal/story-modal.component';
+import { FormatSecondsDirective } from './directives/format-seconds.directive';
 
 @NgModule({
   declarations: [
@@ -47,7 +49,9 @@ import { NotesCellComponent } from './row/cell/notes-cell/notes-cell.component';
     WriterCellComponent,
     BackTimeCellComponent,
     FrontTimeCellComponent,
-    NotesCellComponent
+    NotesCellComponent,
+    StoryModalComponent,
+    FormatSecondsDirective
   ],
   imports: [
     BrowserModule,

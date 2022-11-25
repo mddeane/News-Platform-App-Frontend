@@ -1,0 +1,40 @@
+<div class="modal-content bg-dark">
+    <div class="modal-header">
+        <h1 class="modal-title fs-5" id="storyModalLabel">{{row.pageNumber}} -
+            {{row.storySlug}}</h1>
+        <div class="dropdown py-1 col-status"
+            [class]="!row.body ? rundownService.setStatusBg('unwritten') : rundownService.setStatusBg(row.status)">
+            <!-- ROW STATUS ICON -->
+            <i [class]="!row.body ? rundownService.setStatusIcon('unwritten') : rundownService.setStatusIcon(row.status)"
+                class="cursor-pointer" id="statusMenu" data-bs-toggle="dropdown" aria-expanded="false"></i>
+            <!-- ROW STATUS MENU OPTIONS -->
+            <ul class=" dropdown-menu dropdown-menu-secondary" aria-labelledby="statusMenu">
+                <li><button class="dropdown-item"
+                        [class]="row.status=='approved' ? 'disabled' : !row.body ? 'disabled': ''" type="button"
+                        (click)="row.status='approved'">Approve</button></li>
+                <li>
+                    <button class="dropdown-item" type="button"
+                        [class]="row.status=='ready' ? 'disabled' : !row.body ? 'disabled' : row.status == 'approved' ? 'disabled' : ''"
+                        (click)="row.status='ready'">Ready for
+                        Approval</button>
+                </li>
+                <li>
+                    <button class="dropdown-item"
+                        [class]="row.status=='unapproved' ? 'disabled' : !row.body ? 'disabled' : ''" type="button"
+                        (click)="row.status='unapproved'">Unapprove</button>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <div class="modal-body">
+        <div class="container h-100">
+            <textarea #modalBody appOnEnterKey contenteditable="true" class="mx-3 p-3 w-100 h-100 bg-dark text-white"
+                style="resize: none;" name="storyBody" [value]="row.body"></textarea>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-outline-light" data-bs-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary" (click)="row.body=modalBody.value">Save
+            changes</button>
+    </div>
+</div>

@@ -2,6 +2,7 @@ import { RundownService } from './../../../rundown/rundown.service';
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { User } from 'src/app/user/user.model';
 import { Row } from '../../row.model';
+import { Rundown } from 'src/app/rundown/rundown.model';
 
 @Component({
   selector: 'app-slug-cell',
@@ -13,6 +14,10 @@ export class SlugCellComponent implements OnInit {
   @Input() rows: Row[] = [];
 
   @Input() row: Row = new Row(-1, "", "", "", "", "", "", "", "", 1, new User(-1, "", "", "", "", ""), new Date(), new User(-1, "", "", "", "", ""), new Date(), -1, new User(-1, "", "", "", "", ""), new Date(), new Date(), "", "");
+
+  @Input() rundown: Rundown = new Rundown(-1, new User(-1, "", "", "", "", ""), new Date(), new User(-1, "", "", "", "", ""), new Date(), "", new Date(), new Date(), "",
+    []);
+
 
   // @Output() newSlug = new EventEmitter<string>();
 

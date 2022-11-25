@@ -1,6 +1,6 @@
 <div>
     <div #storySlug appOnEnterKey appOnEscKey previousValue="{{row.storySlug}}" contenteditable="true"
-        (blur)="row.storySlug = storySlug.innerText; rundownService.setRowSpans(rows)">
+        (blur)="row.storySlug = storySlug.innerText; rundownService.setRowSpans(rundown)">
         {{row.storySlug}}
     </div>
 </div>

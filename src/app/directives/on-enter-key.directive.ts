@@ -1,3 +1,4 @@
+import { OnEscKeyDirective } from './on-esc-key.directive';
 import { Directive, ElementRef, HostListener, Input } from '@angular/core';
 
 @Directive({
@@ -12,6 +13,7 @@ export class OnEnterKeyDirective {
    * Calls blur event to shift focus off of element.
    */
   @HostListener('keydown.enter') onBlur() {
+    // this.el.nativeElement.keyEsc;
     this.el.nativeElement.blur();
   }
 }
