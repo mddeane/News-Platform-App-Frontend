@@ -13,29 +13,29 @@ import { Rundown } from './rundown.model';
 })
 export class RundownComponent implements OnInit {
 
-  pageCell?: HTMLElement;
+  // pageCell?: HTMLElement;
 
-  xPos: number = 0;
-  yPos: number = 0;
+  xPos: number = 0; // bound to the return value of getMoveX()
+  // yPos: number = 0; // not used yet
 
-  xStart: number = 0;
-  yStart: number = 0;
+  xStart: number = 0; // bound to mousedown event to set start of drag
+  // yStart: number = 0; // not used yet
 
-  startWidth: number = 0;
-  startHeight: number = 0;
+  startWidth: number = 0; // mousedown events passes column width at start of drag, then mousemove event adds (xPos - xStart)
+  // startHeight: number = 0;  // not used yet
 
-  xEnd: number = 0;
-  yEnd: number = 0;
+  // xEnd: number = 0;
+  // yEnd: number = 0;
 
-  tableHeight: number = 0;
+  // tableHeight: number = 0;
 
-  activeColIndex: number = -1;
+  activeColIndex: number = -1;  // mousedown event sets the active colum index, which draws from colWidths array
 
-  isMoveActive: boolean = false;
+  isMoveActive: boolean = false;  // needs to be true for drag to work
 
-  isLocked: boolean = false;
+  // isLocked: boolean = false;
 
-  previousSlug: string = "";
+  // previousSlug: string = "";
 
   storyModalRow: Row = new Row(-1, "", "", "", "", "", "", "", "", 1, new User(-1, "", "", "", "", ""), new Date(), new User(-1, "", "", "", "", ""), new Date(), -1, new User(-1, "", "", "", "", ""), new Date(), new Date(), "", "");
 
@@ -60,17 +60,17 @@ export class RundownComponent implements OnInit {
 
     new Row(3, "", "Story Slug 3", "INTRO PKG", "CD", "1:30", "1:30", "Contains words 3", "unapproved", 1, this.jadoe, new Date(), this.jadoe, new Date(), -1, this.jadoe, new Date(), new Date(), "", ""),
 
-    new Row(4, "", "Story Slug Same", "INTRO", "AB", "", "", "Contains words 4", "unapproved", 1, this.mdavis, new Date(), this.mdavis, new Date(), -1, this.mdavis, new Date(), new Date(), "", ""),
+    new Row(4, "", "Story Slug Same", "INTRO", "AB", "1:00", "1:00", "Contains words 4", "unapproved", 1, this.mdavis, new Date(), this.mdavis, new Date(), -1, this.mdavis, new Date(), new Date(), "", ""),
 
-    new Row(5, "", "Story Slug Same", "PKG", "", "", "", "Contains words 5", "unapproved", 1, this.jdoe, new Date(), this.jdoe, new Date(), -1, this.jdoe, new Date(), new Date(), "", ""),
+    new Row(5, "", "Story Slug Same", "PKG", "", ":30", ":30", "Contains words 5", "unapproved", 1, this.jdoe, new Date(), this.jdoe, new Date(), -1, this.jdoe, new Date(), new Date(), "", ""),
 
-    new Row(6, "", "Story Slug Same", "TAG", "AB", "", "", "Contains words 6", "unapproved", 1, this.jdoe, new Date(), this.jdoe, new Date(), -1, this.jdoe, new Date(), new Date(), "", ""),
+    new Row(6, "", "Story Slug Same", "TAG", "AB", ":35", ":35", "Contains words 6", "unapproved", 1, this.jdoe, new Date(), this.jdoe, new Date(), -1, this.jdoe, new Date(), new Date(), "", ""),
 
-    new Row(7, "", "Story Slug 7", "INTRO PKG", "AB", "", "", "Contains words 7", "unapproved", 1, this.jdoe, new Date(), this.jdoe, new Date(), -1, this.jdoe, new Date(), new Date(), "", "")
+    new Row(7, "", "Story Slug 7", "INTRO PKG", "AB", "2:00", "2:00", "Contains words 7", "unapproved", 1, this.jdoe, new Date(), this.jdoe, new Date(), -1, this.jdoe, new Date(), new Date(), "", "")
   ];
 
 
-  rundown0: Rundown = new Rundown(1, this.jdoe, new Date(), this.jdoe, new Date(), "5pm News", new Date(), new Date(), "deactivated",
+  rundown0: Rundown = new Rundown(1, this.jdoe, new Date(), this.jdoe, new Date(), "5pm News", new Date(), new Date(), false, "deactivated",
     [new Row(1, "", "Story Slug 1", "INTRO VO", "AB CD", "0:30", "0:30", "Contains words 1", "unapproved", 1, this.jdoe, new Date(), this.jdoe, new Date(), -1, this.jdoe, new Date(), new Date(), "These are notes.", ""),
 
     new Row(2, "", "Story Slug 2", "INTRO PKG", "AB CD", "0:45", "0:45", "", "unapproved", 1, this.jadoe, new Date(), this.jdoe, new Date(), -1, this.jdoe, new Date(), new Date(), "", ""),
@@ -78,13 +78,13 @@ export class RundownComponent implements OnInit {
     new Row(3, "", "Story Slug 3", "INTRO PKG", "CD", "1:30", "1:30", "Contains words 3", "unapproved", 1, this.jadoe, new Date(), this.jadoe, new Date(), -1, this.jadoe, new Date(), new Date(), "", "")
     ]);
 
-  rundown1: Rundown = new Rundown(2, this.jdoe, new Date(), this.jdoe, new Date(), "6pm News", new Date(), new Date(), "deactivated",
+  rundown1: Rundown = new Rundown(2, this.jdoe, new Date(), this.jdoe, new Date(), "6pm News", new Date(), new Date(), false, "deactivated",
     [new Row(4, "", "Story Slug Same", "INTRO", "AB", "", "", "Contains words 4", "unapproved", 1, this.mdavis, new Date(), this.mdavis, new Date(), -1, this.mdavis, new Date(), new Date(), "", ""),
 
     new Row(5, "", "Story Slug Same", "PKG", "", "", "", "Contains words 5", "unapproved", 1, this.jdoe, new Date(), this.jdoe, new Date(), -1, this.jdoe, new Date(), new Date(), "", "")
     ]);
 
-  rundown2: Rundown = new Rundown(3, this.jdoe, new Date(), this.jdoe, new Date(), "10pm News", new Date(), new Date(), "deactivated",
+  rundown2: Rundown = new Rundown(3, this.jdoe, new Date(), this.jdoe, new Date(), "10pm News", new Date(), new Date(), false, "deactivated",
     [new Row(6, "", "Story Slug Same", "TAG", "AB", "", "", "Contains words 6", "unapproved", 1, this.jdoe, new Date(), this.jdoe, new Date(), -1, this.jdoe, new Date(), new Date(), "", ""),
 
     new Row(7, "", "Story Slug 7", "INTRO PKG", "AB", "", "", "Contains words 7", "unapproved", 1, this.jdoe, new Date(), this.jdoe, new Date(), -1, this.jdoe, new Date(), new Date(), "", "")
@@ -105,7 +105,6 @@ export class RundownComponent implements OnInit {
     // this.rows = this.setRows(this.rowsFromDb);
     // this.rows = this.setRows(this.rundown.rows);
     // this.showRows = this.rundownService.setRowSpans(this.rows);
-
     for (let i = 0; i < this.rundowns.length; i++) {
       this.rundowns[i].rows = this.setRows(this.rundowns[i]);
       this.showRows = this.rundownService.setRowSpans(this.rundowns[i]);
@@ -186,7 +185,7 @@ export class RundownComponent implements OnInit {
     this.dragActive = false;
     this.dragActiveIndex = -1;
     this.dragStartIndex = -1;
-    !this.isLocked ? this.setPageNumbers(rundown) : '';
+    !rundown.isLocked ? this.setPageNumbers(rundown) : '';
   }
 
   handleDragenter(event: DragEvent, el: HTMLElement, row: Row, rundown: Rundown, index: number) {
@@ -238,7 +237,7 @@ export class RundownComponent implements OnInit {
       row.pageNumber = "1";
     }
     this.rundownService.setRowSpans(rundown);
-    !this.isLocked ? this.setPageNumbers(rundown) : '';
+    !rundown.isLocked ? this.setPageNumbers(rundown) : '';
   }
 
   setRows(rundown: Rundown): Row[] {
@@ -275,30 +274,4 @@ export class RundownComponent implements OnInit {
   deleteRow(rowIndex: number, rows: Row[]) {
     rows.splice(rowIndex, 1);
   }
-
-  // setRowSpans(rows: Row[]) {
-
-  //   let previousSlug = "";
-  //   let spans = 1;
-  //   for (let i = 0; i < rows.length; i++) {
-  //     if (i == 0) {
-  //       previousSlug = rows[i].storySlug;
-  //       rows[i].slugRowSpan = spans;
-  //     } else {
-  //       if (rows[i].storySlug != previousSlug) {
-  //         previousSlug = rows[i].storySlug;
-  //         spans = 1;
-  //         rows[i].slugRowSpan = spans;
-  //       } else {
-  //         rows[i].slugRowSpan = 0;
-  //         rows[i - spans].slugRowSpan = spans + 1;
-  //         spans++;
-  //       }
-  //     }
-  //   }
-  //   // for (let row of rows) {
-  //   //   console.log("Row span: " + row.slugRowSpan);
-  //   // }
-  //   return rows;
-  // }
 }

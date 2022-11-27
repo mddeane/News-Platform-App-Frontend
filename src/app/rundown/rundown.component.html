@@ -1,3 +1,4 @@
+<!--  -->
 <div class="container-fluid no-select"
     (mousemove)="xPos=getMoveX($event); isMoveActive ? colWidths[activeColIndex]=(startWidth + xPos - xStart) : '';"
     (mousedown)="xStart=xPos" (mouseup)="isMoveActive=false; activeColIndex=-1" (mouseleave)="isMoveActive=false"
@@ -60,14 +61,14 @@
                             <th class="col-status">
                                 <div class="dropdown">
                                     <!-- LOCK ICON -->
-                                    <i [class]="isLocked ? 'bi bi-lock' : 'bi bi-unlock'" class="cursor-pointer"
+                                    <i [class]="rundown.isLocked ? 'bi bi-lock' : 'bi bi-unlock'" class="cursor-pointer"
                                         id="lockMenu" data-bs-toggle="dropdown" aria-expanded="false"></i>
                                     <!-- LOCK MENU OPTIONS -->
                                     <ul class=" dropdown-menu dropdown-menu-secondary" aria-labelledby="lockMenu">
-                                        <li *ngIf="!isLocked"><button class="dropdown-item" type="button"
-                                                (click)="isLocked = true">Lock</button></li>
-                                        <li *ngIf="isLocked"><button class="dropdown-item" type="button"
-                                                (click)="isLocked = false; setPageNumbers(rundown)">Unlock</button>
+                                        <li *ngIf="!rundown.isLocked"><button class="dropdown-item" type="button"
+                                                (click)="rundown.isLocked = true">Lock</button></li>
+                                        <li *ngIf="rundown.isLocked"><button class="dropdown-item" type="button"
+                                                (click)="rundown.isLocked = false; setPageNumbers(rundown)">Unlock</button>
                                         </li>
                                     </ul>
                                 </div>
@@ -113,21 +114,21 @@
                                                 Open Story</button>
                                         </li>
                                         <li><button class="dropdown-item" type="button"
-                                                (click)="addRow((i+1), rundown); rundownService.setRowSpans(rundown); !isLocked ? setPageNumbers(rundown) : '';">
+                                                (click)="addRow((i+1), rundown); rundownService.setRowSpans(rundown); !rundown.isLocked ? setPageNumbers(rundown) : '';">
                                                 <i class="bi bi-plus-lg"></i>
                                                 Add Row</button></li>
                                         <li><button class="dropdown-item" type="button"
-                                                (click)="deleteRow(i, rundown.rows); rundownService.setRowSpans(rundown); !isLocked ? setPageNumbers(rundown) : '';">
+                                                (click)="deleteRow(i, rundown.rows); rundownService.setRowSpans(rundown); !rundown.isLocked ? setPageNumbers(rundown) : '';">
                                                 <i class="bi bi-x-lg"></i>
                                                 Delete Row</button></li>
 
                                         <li><button class="dropdown-item" [class]="i==0 ? 'disabled' : ''" type="button"
-                                                (click)="moveRow(i, (i-1), rundown); rundownService.setRowSpans(rundown); !isLocked ? setPageNumbers(rundown) : '';"><i
+                                                (click)="moveRow(i, (i-1), rundown); rundownService.setRowSpans(rundown); !rundown.isLocked ? setPageNumbers(rundown) : '';"><i
                                                     class="bi bi-arrow-up"></i> Move
                                                 Up</button></li>
                                         <li><button class="dropdown-item" type="button"
                                                 [class]="i==(rundown.rows.length - 1) ? 'disabled' : ''" type="button"
-                                                (click)="moveRow(i, (i+1), rundown); rundownService.setRowSpans(rundown); !isLocked ? setPageNumbers(rundown) : '';"><i
+                                                (click)="moveRow(i, (i+1), rundown); rundownService.setRowSpans(rundown); !rundown.isLocked ? setPageNumbers(rundown) : '';"><i
                                                     class="bi bi-arrow-down"></i> Move
                                                 Down</button></li>
                                     </ul>
@@ -167,7 +168,7 @@
                             </td>
                             <!-- ROW PAGE NUMBER -->
                             <td>
-                                <app-page-cell [row]=row [isLocked]=isLocked></app-page-cell>
+                                <app-page-cell [row]=row [isLocked]=rundown.isLocked></app-page-cell>
                             </td>
                             <td *ngIf="row.slugRowSpan > 0" [attr.rowspan]="row.slugRowSpan"
                                 [ngStyle]="{'vertical-align' : row.slugRowSpan > 1 ? 'middle' : ''}">

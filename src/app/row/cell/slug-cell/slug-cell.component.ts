@@ -15,7 +15,7 @@ export class SlugCellComponent implements OnInit {
 
   @Input() row: Row = new Row(-1, "", "", "", "", "", "", "", "", 1, new User(-1, "", "", "", "", ""), new Date(), new User(-1, "", "", "", "", ""), new Date(), -1, new User(-1, "", "", "", "", ""), new Date(), new Date(), "", "");
 
-  @Input() rundown: Rundown = new Rundown(-1, new User(-1, "", "", "", "", ""), new Date(), new User(-1, "", "", "", "", ""), new Date(), "", new Date(), new Date(), "",
+  @Input() rundown: Rundown = new Rundown(-1, new User(-1, "", "", "", "", ""), new Date(), new User(-1, "", "", "", "", ""), new Date(), "", new Date(), new Date(), false, "",
     []);
 
 

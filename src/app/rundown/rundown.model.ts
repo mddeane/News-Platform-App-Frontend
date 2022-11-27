@@ -9,11 +9,12 @@ export class Rundown {
     modifiedAt: Date;
     title: string;
     startTime: Date;
-    endTIme: Date;
-    status: string;
+    endTime: Date;
+    isLocked: boolean;
+    status: string; // activated, deactivated, archived
     rows: Row[];
 
-    constructor(id: number, createdBy: User, createdAt: Date, modifiedBy: User, modifiedAt: Date, title: string, startTime: Date, endTIme: Date, status: string, rows: Row[]) {
+    constructor(id: number, createdBy: User, createdAt: Date, modifiedBy: User, modifiedAt: Date, title: string, startTime: Date, endTime: Date, isLocked: boolean, status: string, rows: Row[]) {
         this.id = id;
         this.createdBy = createdBy;
         this.createdAt = createdAt;
@@ -21,7 +22,8 @@ export class Rundown {
         this.modifiedAt = modifiedAt;
         this.title = title;
         this.startTime = startTime;
-        this.endTIme = endTIme;
+        this.endTime = endTime;
+        this.isLocked = isLocked;
         this.status = status;
         this.rows = rows;
     }
