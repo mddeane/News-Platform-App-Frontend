@@ -14,7 +14,8 @@
                 <li *ngFor="let rundown of rundowns; let i = index" class="nav-item" role="presentation">
                     <button [class]="i==0 ? 'nav-link active' : 'nav-link'" [id]="'pills-' + i + '-tab'"
                         data-bs-toggle="pill" [attr.data-bs-target]="'#pills-' + i" type="button" role="tab"
-                        [attr.aria-controls]="'pills-' + i" aria-selected="true">{{rundown.title}}</button>
+                        [attr.aria-controls]="'pills-' + i" aria-selected="true"
+                        (click)="activeRundownIndex=i">{{rundown.title}}</button>
                 </li>
 
 
@@ -47,9 +48,18 @@
                                     <i class="bi bi-caret-down-square"></i>
                                     <!-- RUNDOWN MENU OPTIONS -->
                                     <ul class="dropdown-menu dropdown-menu-secondary">
-                                        <li><button class="dropdown-item" type="button">Rundown Option 1</button></li>
-                                        <li><button class="dropdown-item" type="button">Rundown Option 2</button></li>
-                                        <li><button class="dropdown-item" type="button">Rundown Option 3</button></li>
+                                        <li><button class="dropdown-item"
+                                                [class]="selectedRowIndexes[activeRundownIndex].length == rundowns[activeRundownIndex].rows.length ? 'disabled' : ''"
+                                                type="button" (click)="selectAllRows(rundown)">Select All Rows</button>
+                                        </li>
+                                        <li><button class="dropdown-item"
+                                                [class]="selectedRowIndexes[activeRundownIndex].length < 1 ? 'disabled' : ''"
+                                                type="button" (click)="unselectAllRows()">Unselect all Rows</button>
+                                        </li>
+                                        <li><button class="dropdown-item" type="button" (click)="copyRows()">Copy
+                                                Rows</button></li>
+                                        <li><button class="dropdown-item" type="button" (click)="pasteRows()">Paste
+                                                Rows</button></li>
                                     </ul>
                                 </div>
                             </th>
@@ -99,7 +109,7 @@
                             (dragleave)="handleDragleave($event, rowElement, row, rundown, i)"
                             (dragover)="handleDragover($event, rowElement, row, rundown, i)"
                             (drop)="handleDrop($event, rowElement, row, rundown, i)"
-                            [class]="(dragActiveRundownId==rundown.id) && (i == dragActiveIndex || i == dragStartIndex) ? 'row-highlight' : 'no-highlight'">
+                            [class]="((dragActiveRundownId==rundown.id) && (i == dragActiveIndex || i == dragStartIndex)) ||  selectedRowIndexes[activeRundownIndex].includes(i) ? 'row-highlight' : 'no-highlight'">
                             <!-- ROW MENU -->
                             <td class="text-center" class="cursor-pointer text-center" data-bs-toggle="dropdown"
                                 aria-expanded="false">
@@ -131,6 +141,13 @@
                                                 (click)="moveRow(i, (i+1), rundown); rundownService.setRowSpans(rundown); !rundown.isLocked ? setPageNumbers(rundown) : '';"><i
                                                     class="bi bi-arrow-down"></i> Move
                                                 Down</button></li>
+
+                                        <li><button class="dropdown-item" type="button"
+                                                (click)="selectOrUnselectRow(row, i)"><i class="bi bi-check-square"></i>
+                                                {{selectedRowIndexes[activeRundownIndex].includes(i) ? "Unselect Row" :
+                                                "Select Row"}}
+                                            </button>
+                                        </li>
                                     </ul>
                                 </div>
                                 <!-- ROW MOVE -->
@@ -171,7 +188,7 @@
                                 <app-page-cell [row]=row [isLocked]=rundown.isLocked></app-page-cell>
                             </td>
                             <td *ngIf="row.slugRowSpan > 0" [attr.rowspan]="row.slugRowSpan"
-                                [ngStyle]="{'vertical-align' : row.slugRowSpan > 1 ? 'middle' : ''}">
+                                [ngStyle]="{'vertical-align' : row.slugRowSpan > 1 ? 'top' : ''}">
                                 <app-slug-cell [row]=row [rows]=rundown.rows [rundown]=rundown></app-slug-cell>
                             </td>
                             <td *ngFor="let cell of cells">

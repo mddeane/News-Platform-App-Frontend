@@ -1,5 +1,5 @@
 import { RundownService } from './rundown.service';
-import { Component, OnInit } from '@angular/core';
+import { Component, HostListener, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Row } from '../row/row.model';
 import { User } from '../user/user.model';
@@ -96,6 +96,8 @@ export class RundownComponent implements OnInit {
     this.rundown2
   ];
 
+  activeRundownIndex: number = 0;
+
   num: number = Date.now();
   d: Date = new Date();
 
@@ -108,6 +110,7 @@ export class RundownComponent implements OnInit {
     for (let i = 0; i < this.rundowns.length; i++) {
       this.rundowns[i].rows = this.setRows(this.rundowns[i]);
       this.showRows = this.rundownService.setRowSpans(this.rundowns[i]);
+      this.selectedRowIndexes.push([]); // this sets up the rundown index (first array)
     }
   }
 
@@ -168,12 +171,21 @@ export class RundownComponent implements OnInit {
   dragActiveIndex: number = -1;
   dragRows: HTMLElement[] = [];
   dragActiveRundownId: number = -1;
+  dragIndexes: number[] = [];
+
+  selectedRows: Row[] = [];
+  selectedRowIndexes: number[][] = [];
+
+  copiedRows: Row[] = [];
 
   handleDragstart(event: DragEvent, el: HTMLElement, row: Row, rundown: Rundown, index: number) {
     //    console.log("Drag start row index " + index);
     this.dragActive = true;
     this.dragStartIndex = index;
     this.dragActiveRundownId = rundown.id;
+    // this.dragIndexes.push(this.dragStartIndex);
+    // this.dragIndexes.sort();
+    // console.log(this.dragIndexes);
   }
 
   handleDrag(event: DragEvent, el: HTMLElement, row: Row, rundown: Rundown, index: number) {
@@ -185,6 +197,7 @@ export class RundownComponent implements OnInit {
     this.dragActive = false;
     this.dragActiveIndex = -1;
     this.dragStartIndex = -1;
+    this.dragIndexes = [];
     !rundown.isLocked ? this.setPageNumbers(rundown) : '';
   }
 
@@ -273,5 +286,71 @@ export class RundownComponent implements OnInit {
 
   deleteRow(rowIndex: number, rows: Row[]) {
     rows.splice(rowIndex, 1);
+  }
+
+  resetSelectedRows() {
+    // this.selectedRows = [];
+
+    let activeRowArray = this.selectedRowIndexes[this.activeRundownIndex];
+    activeRowArray = [];
+  }
+
+  selectAllRows(rundown: Rundown) {
+    // for (let row of rundown.rows) {
+    //   if (!this.selectedRows.includes(row)) {
+    //     this.selectedRows.push(row);
+    //   }
+    // }
+
+    let activeRowArray = this.selectedRowIndexes[this.activeRundownIndex];
+    for (let i = 0; i < rundown.rows.length; i++) {
+      if (!activeRowArray.includes(i)) {
+        activeRowArray.push(i);
+      }
+    }
+    activeRowArray.sort();
+    console.log("this.activeRundownIndex: " + this.activeRundownIndex + " activeRowArray: " + activeRowArray);
+  }
+
+  unselectAllRows() {
+    // this.selectedRows.splice(0);
+
+    let activeRowArray = this.selectedRowIndexes[this.activeRundownIndex];
+    activeRowArray.splice(0);
+    console.log("this.activeRundownIndex: " + this.activeRundownIndex + " activeRowArray: " + activeRowArray);
+  }
+
+  selectOrUnselectRow(row: Row, rowIndex: number) {
+    // this.selectedRows.includes(row) ? this.selectedRows.splice(this.selectedRows.indexOf(row), 1) : this.selectedRows.push(row);
+
+    let activeRowArray = this.selectedRowIndexes[this.activeRundownIndex];
+    activeRowArray.includes(rowIndex) ? activeRowArray.splice(activeRowArray.indexOf(rowIndex), 1)
+      : activeRowArray.push(rowIndex);
+    activeRowArray.sort();
+    console.log("this.activeRundownIndex: " + this.activeRundownIndex + " activeRowArray: " + activeRowArray);
+  }
+
+  copyRows() {
+    this.copiedRows = [];
+    let activeRowArray = this.selectedRowIndexes[this.activeRundownIndex];
+    let activeRundown = this.rundowns[this.activeRundownIndex];
+    let rows = activeRundown.rows;
+    for (let rowIndex of activeRowArray) {
+      this.copiedRows.push(rows[rowIndex]);
+    }
+  }
+
+
+  pasteRows() {
+    let rundown = this.rundowns[this.activeRundownIndex];
+    let rowIndex = rundown.rows.length;
+    let rows = this.copiedRows;
+    for (let i = 0; i < rows.length; i++) {
+      rundown.rows.splice(rowIndex + i, 0, new Row((Math.floor(Math.random() * 1000) + 1), "", rows[i].storySlug, rows[i].segment, rows[i].anchor, rows[i].estTime, rows[i].actTime, rows[i].body, "unapproved", rows[i].slugRowSpan, rows[i].createdBy, rows[i].createdAt, rows[i].modifiedBy, rows[i].modifiedAt, rows[i].storyId, rows[i].writer, rows[i].backTime, rows[i].frontTime, rows[i].notes, rows[i].rowType));
+
+    }
+    rundown.rows = this.setRows(rundown);
+    this.rundownService.setRowSpans(rundown);
+    this.unselectAllRows();
   }
 }
