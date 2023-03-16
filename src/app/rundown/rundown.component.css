@@ -63,6 +63,13 @@ table th, td {
     border: 1px solid #6c757d;
 }
 
+/* table.lock-bar th, td {
+    border-top: 1px solid red;
+} */
+
+.lock-bar {
+    outline: 1px solid #dee2e6;
+}
 
 td div div, th div div  {
     white-space: pre-line
@@ -82,4 +89,13 @@ td div div, th div div  {
 .nav-link {
     border-radius: 0px;
     color: #adb5bd;
+}
+
+.break {
+    background-color:blue !important;
+}
+
+.delete-dropdown-item {
+    background-color: #dc3545;
+    color: white;
 }

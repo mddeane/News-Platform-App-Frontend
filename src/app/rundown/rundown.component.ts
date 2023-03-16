@@ -1,9 +1,12 @@
+import { AlertService } from './../alert/alert.service';
+import { TestData } from './../../common/testData';
 import { RundownService } from './rundown.service';
-import { Component, HostListener, OnInit } from '@angular/core';
+import { Component, EventEmitter, HostListener, OnInit, Output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Row } from '../row/row.model';
 import { User } from '../user/user.model';
 import { Rundown } from './rundown.model';
+import { Constants } from 'src/common/constants';
 
 
 @Component({
@@ -12,6 +15,13 @@ import { Rundown } from './rundown.model';
   styleUrls: ['./rundown.component.css']
 })
 export class RundownComponent implements OnInit {
+
+
+
+  message: string = "";
+  buttonInChildComponentWasClicked() {
+    this.message = 'The button in the child component was clicked';
+  }
 
   // pageCell?: HTMLElement;
 
@@ -37,80 +47,53 @@ export class RundownComponent implements OnInit {
 
   // previousSlug: string = "";
 
-  storyModalRow: Row = new Row(-1, "", "", "", "", "", "", "", "", 1, new User(-1, "", "", "", "", ""), new Date(), new User(-1, "", "", "", "", ""), new Date(), -1, new User(-1, "", "", "", "", ""), new Date(), new Date(), "", "");
+  storyModalRow: Row = Constants.defaultRow;
 
-  jdoe: User = new User(1, "John", "Doe", "jdoe", "password", "admin");
-  jadoe: User = new User(2, "Jane", "Doe", "jadoe", "password", "producer");
-  mdavis: User = new User(3, "Miles", "Davis", "mdavis", "password", "writer");
+  jdoe: User = TestData.jdoe;
+  jadoe: User = TestData.jadoe;
+  mdavis: User = TestData.mdavis;
 
   rows: Row[] = [];
 
-  showRows: Row[] = [];
+  // showRows: Row[] = [];
 
-  colWidths: number[] = [50, 200, 150, 100, 100, 100, 100, 110, 110, 200];
+  defaultColWidths: number[] = [...Constants.defaultColWidths];
+  colWidthsArray: number[][] = [];
 
-  headings: string[] = ["Page", "Slug", "Segment", "Anchor", "Est Time", "Act Time", "Writer", "Back Time", "Front Time", "Notes"];
+  colOffsetWidth: number = 0;
 
-  cells: string[] = ["Segment", "Anchor", "Est Time", "Act Time", "Writer", "Back Time", "Front Time", "Notes"];
+  headings: string[] = [...Constants.defaultHeadings];
 
-  rowsFromDb: Row[] = [
-    new Row(1, "", "Story Slug 1", "INTRO VO", "AB CD", "0:30", "0:30", "Contains words 1", "unapproved", 1, this.jdoe, new Date(), this.jdoe, new Date(), -1, this.jdoe, new Date(), new Date(), "These are notes.", ""),
+  rowsFromDb: Row[] = [...TestData.testRows];
 
-    new Row(2, "", "Story Slug 2", "INTRO PKG", "AB CD", "0:45", "0:45", "", "unapproved", 1, this.jadoe, new Date(), this.jdoe, new Date(), -1, this.jdoe, new Date(), new Date(), "", ""),
-
-    new Row(3, "", "Story Slug 3", "INTRO PKG", "CD", "1:30", "1:30", "Contains words 3", "unapproved", 1, this.jadoe, new Date(), this.jadoe, new Date(), -1, this.jadoe, new Date(), new Date(), "", ""),
-
-    new Row(4, "", "Story Slug Same", "INTRO", "AB", "1:00", "1:00", "Contains words 4", "unapproved", 1, this.mdavis, new Date(), this.mdavis, new Date(), -1, this.mdavis, new Date(), new Date(), "", ""),
-
-    new Row(5, "", "Story Slug Same", "PKG", "", ":30", ":30", "Contains words 5", "unapproved", 1, this.jdoe, new Date(), this.jdoe, new Date(), -1, this.jdoe, new Date(), new Date(), "", ""),
-
-    new Row(6, "", "Story Slug Same", "TAG", "AB", ":35", ":35", "Contains words 6", "unapproved", 1, this.jdoe, new Date(), this.jdoe, new Date(), -1, this.jdoe, new Date(), new Date(), "", ""),
-
-    new Row(7, "", "Story Slug 7", "INTRO PKG", "AB", "2:00", "2:00", "Contains words 7", "unapproved", 1, this.jdoe, new Date(), this.jdoe, new Date(), -1, this.jdoe, new Date(), new Date(), "", "")
-  ];
-
-
-  rundown0: Rundown = new Rundown(1, this.jdoe, new Date(), this.jdoe, new Date(), "5pm News", new Date(), new Date(), false, "deactivated",
-    [new Row(1, "", "Story Slug 1", "INTRO VO", "AB CD", "0:30", "0:30", "Contains words 1", "unapproved", 1, this.jdoe, new Date(), this.jdoe, new Date(), -1, this.jdoe, new Date(), new Date(), "These are notes.", ""),
-
-    new Row(2, "", "Story Slug 2", "INTRO PKG", "AB CD", "0:45", "0:45", "", "unapproved", 1, this.jadoe, new Date(), this.jdoe, new Date(), -1, this.jdoe, new Date(), new Date(), "", ""),
-
-    new Row(3, "", "Story Slug 3", "INTRO PKG", "CD", "1:30", "1:30", "Contains words 3", "unapproved", 1, this.jadoe, new Date(), this.jadoe, new Date(), -1, this.jadoe, new Date(), new Date(), "", "")
-    ]);
-
-  rundown1: Rundown = new Rundown(2, this.jdoe, new Date(), this.jdoe, new Date(), "6pm News", new Date(), new Date(), false, "deactivated",
-    [new Row(4, "", "Story Slug Same", "INTRO", "AB", "", "", "Contains words 4", "unapproved", 1, this.mdavis, new Date(), this.mdavis, new Date(), -1, this.mdavis, new Date(), new Date(), "", ""),
-
-    new Row(5, "", "Story Slug Same", "PKG", "", "", "", "Contains words 5", "unapproved", 1, this.jdoe, new Date(), this.jdoe, new Date(), -1, this.jdoe, new Date(), new Date(), "", "")
-    ]);
-
-  rundown2: Rundown = new Rundown(3, this.jdoe, new Date(), this.jdoe, new Date(), "10pm News", new Date(), new Date(), false, "deactivated",
-    [new Row(6, "", "Story Slug Same", "TAG", "AB", "", "", "Contains words 6", "unapproved", 1, this.jdoe, new Date(), this.jdoe, new Date(), -1, this.jdoe, new Date(), new Date(), "", ""),
-
-    new Row(7, "", "Story Slug 7", "INTRO PKG", "AB", "", "", "Contains words 7", "unapproved", 1, this.jdoe, new Date(), this.jdoe, new Date(), -1, this.jdoe, new Date(), new Date(), "", "")
-    ]);
-
-  rundowns: Rundown[] = [
-    this.rundown0,
-    this.rundown1,
-    this.rundown2
-  ];
+  rundowns: Rundown[] = [...TestData.testRundowns];
 
   activeRundownIndex: number = 0;
+
+  deleteThisRundown: Rundown = Constants.defaultRundown;
+
+  deleteThisRowIndex: number = 0;
+  rundownForDeleteRow: Rundown = Constants.defaultRundown;
 
   num: number = Date.now();
   d: Date = new Date();
 
-  constructor(public rundownService: RundownService) { }
+  endOfCell: number = 0;
+
+  showMaintenance: boolean = false;
+
+  constructor(public rundownService: RundownService, public alertService: AlertService) { }
 
   ngOnInit(): void {
     // this.rows = this.setRows(this.rowsFromDb);
     // this.rows = this.setRows(this.rundown.rows);
     // this.showRows = this.rundownService.setRowSpans(this.rows);
     for (let i = 0; i < this.rundowns.length; i++) {
+      this.colWidthsArray[i] = [...Constants.defaultColWidths];
       this.rundowns[i].rows = this.setRows(this.rundowns[i]);
-      this.showRows = this.rundownService.setRowSpans(this.rundowns[i]);
+      // this.showRows = this.rundownService.setRowSpans(this.rundowns[i]);
       this.selectedRowIndexes.push([]); // this sets up the rundown index (first array)
+      this.newStoryCounters[i] = 1;
     }
   }
 
@@ -134,7 +117,7 @@ export class RundownComponent implements OnInit {
         classString = "bi bi-text-left"
         break;
       case "ready":
-        classString = "bi bi-star-fill"
+        classString = "bi bi-bookmark"
         break;
       case "approved":
         classString = "bi bi-check-lg"
@@ -226,13 +209,15 @@ export class RundownComponent implements OnInit {
     }
     this.moveRow(this.dragStartIndex, this.dragActiveIndex, rundown);
     this.rundownService.setRowSpans(rundown);
+    this.unselectAllRows();
     event.stopPropagation(); // stops the browser from redirecting.
     return false;
   }
 
   moveRow(startIndex: number, endIndex: number, rundown: Rundown) {
-    console.log("startIndex: " + startIndex);
-    console.log("endIndex: " + endIndex);
+    // console.log("startIndex: " + startIndex);
+    // console.log("endIndex: " + endIndex);
+
     if (startIndex > endIndex) {           // moving a story from bottom to top (moving up)
       rundown.rows.splice(endIndex, 0, rundown.rows[startIndex]); // insert start index item above end index, which pushes all items down one
       rundown.rows.splice(startIndex + 1, 1); // delete one item at the start index plus one because it has moved down one with the insertion of end index item
@@ -241,6 +226,20 @@ export class RundownComponent implements OnInit {
       rundown.rows.splice(startIndex, 1);  // delete item at the start index
     }
   }
+
+  // moveRows(startIndex: number, endIndex: number, rundown: Rundown) {
+  //   let rows = this.selectedRowIndexes[this.activeRundownIndex];
+  //   let rowIndex = endIndex;
+  //   for (let i = 0; i < rows.length; i++) {
+  //     rundown.rows.splice(rowIndex + i, 0, new Row((Math.floor(Math.random() * 1000) + 1), "", rows[i].storySlug, rows[i].segment, rows[i].anchor, rows[i].estTime, rows[i].actTime, rows[i].body, "unapproved", rows[i].slugRowSpan, rows[i].createdBy, rows[i].createdAt, rows[i].modifiedBy, rows[i].modifiedAt, rows[i].storyId, rows[i].writer, rows[i].backTime, rows[i].frontTime, rows[i].notes, rows[i].rowType));
+
+  //   }
+  //   if (!rundown.isLocked) {
+  //     rundown.rows = this.setRows(rundown);
+  //   }
+  //   this.rundownService.setRowSpans(rundown);
+  //   this.unselectAllRows();
+  // }
 
   updateRows(rundown: Rundown) {
     //this.rows = this.setPageNumbers(rows);
@@ -264,28 +263,40 @@ export class RundownComponent implements OnInit {
   }
 
   setPageNumbers(rundown: Rundown): Row[] {
-    console.log("inside setPageNumbers");
+    // console.log("inside setPageNumbers");
     let blockLetter: string = "A";
+    let blockLetterIndex: number = 0;
     let pageCounter: number = 1;
 
-    for (let row of rundown.rows) {
-      row.pageNumber = blockLetter + pageCounter;
-      console.log("row.pageNumber: " + row.pageNumber);
+    for (let i = 0; i < rundown.rows.length; i++) {
+      rundown.rows[i].pageNumber = Constants.blockLetters[blockLetterIndex] + pageCounter;
+      if (rundown.rows[i].rowType == 'break') {
+        blockLetterIndex++;
+        pageCounter = 0;
+      }
       pageCounter++;
     }
     return rundown.rows;
   }
 
-  defaultUser: User = new User(0, "", "", "", "", "reader");
+  defaultUser: User = Constants.defaultUser;
   newRowCounter = 1;
+  newStoryCounters: number[] = [];
 
   addRow(rowIndex: number, rundown: Rundown) {
-    rundown.rows.splice(rowIndex, 0, new Row((rundown.rows.length + 1), "", "New Row " + this.newRowCounter, "", "", "0:00", "0:00", "", "unapproved", 1, this.defaultUser, new Date(), this.defaultUser, new Date(), -1, this.defaultUser, new Date(), new Date(), "", ""));
-    this.newRowCounter++;
+    let rowNumber: number = 0;
+    for (let i = 0; i < this.rundowns.length; i++) {
+      if (rundown.id == this.rundowns[i].id) {
+        rowNumber = this.newStoryCounters[i];
+        this.newStoryCounters[i]++;
+      }
+    }
+    rundown.rows.splice(rowIndex, 0, new Row((rundown.rows.length + 1), "", "New Row " + rowNumber, "", "", "0:00", "0:00", "", "unapproved", 1, this.defaultUser.username, new Date(), this.defaultUser.username, new Date(), -1, this.defaultUser.username, new Date(), new Date(), "", ""));
+
   }
 
-  deleteRow(rowIndex: number, rows: Row[]) {
-    rows.splice(rowIndex, 1);
+  addBreak(rowIndex: number, rundown: Rundown) {
+    rundown.rows.splice(rowIndex, 0, new Row((rundown.rows.length + 1), "", "BREAK", "", "", "0:00", "0:00", "", "unapproved", 1, this.defaultUser.username, new Date(), this.defaultUser.username, new Date(), -1, this.defaultUser.username, new Date(), new Date(), "", "break"));
   }
 
   resetSelectedRows() {
@@ -313,11 +324,14 @@ export class RundownComponent implements OnInit {
   }
 
   unselectAllRows() {
-    // this.selectedRows.splice(0);
-
-    let activeRowArray = this.selectedRowIndexes[this.activeRundownIndex];
-    activeRowArray.splice(0);
-    console.log("this.activeRundownIndex: " + this.activeRundownIndex + " activeRowArray: " + activeRowArray);
+    let numberOfRundowns = this.rundowns.length;
+    for (let i = 0; i < numberOfRundowns; i++) {
+      let activeRowArray = this.selectedRowIndexes[i];
+      activeRowArray.splice(0);
+    }
+    // let activeRowArray = this.selectedRowIndexes[this.activeRundownIndex];
+    // activeRowArray.splice(0);
+    // console.log("this.activeRundownIndex: " + this.activeRundownIndex + " activeRowArray: " + activeRowArray);
   }
 
   selectOrUnselectRow(row: Row, rowIndex: number) {
@@ -340,17 +354,44 @@ export class RundownComponent implements OnInit {
     }
   }
 
+  copyRow(row: Row) {
+    this.copiedRows = [];
+    this.copiedRows.push(row);
+  }
 
-  pasteRows() {
-    let rundown = this.rundowns[this.activeRundownIndex];
-    let rowIndex = rundown.rows.length;
+  pasteRows(rundown: Rundown, rowIndex: number) {
+    // let rundown = this.rundowns[this.activeRundownIndex];
+    // let rowIndex = rundown.rows.length;
     let rows = this.copiedRows;
     for (let i = 0; i < rows.length; i++) {
       rundown.rows.splice(rowIndex + i, 0, new Row((Math.floor(Math.random() * 1000) + 1), "", rows[i].storySlug, rows[i].segment, rows[i].anchor, rows[i].estTime, rows[i].actTime, rows[i].body, "unapproved", rows[i].slugRowSpan, rows[i].createdBy, rows[i].createdAt, rows[i].modifiedBy, rows[i].modifiedAt, rows[i].storyId, rows[i].writer, rows[i].backTime, rows[i].frontTime, rows[i].notes, rows[i].rowType));
 
     }
-    rundown.rows = this.setRows(rundown);
+    if (!rundown.isLocked) {
+      rundown.rows = this.setRows(rundown);
+    }
     this.rundownService.setRowSpans(rundown);
     this.unselectAllRows();
+  }
+
+  lockRundown(rundown: Rundown) {
+    rundown.isLocked = true;
+    this.alertService.showAlert("Rundown is locked.", "danger");
+  }
+
+  unlockRundown(rundown: Rundown) {
+    rundown.isLocked = false;
+    this.alertService.showAlert("Rundown is unlocked.", "success");
+    this.setPageNumbers(rundown);
+  }
+
+  resetColWidths(activeRundownIndex: number) {
+    for (let i = 0; i < this.colWidthsArray[activeRundownIndex].length; i++) {
+      this.colWidthsArray[activeRundownIndex][i] = Constants.defaultColWidths[i];
+    }
+  }
+
+  deleteRow(rowIndex: number, rows: Row[]) {
+    rows.splice(rowIndex, 1);
   }
 }

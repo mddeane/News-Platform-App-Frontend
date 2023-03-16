@@ -1,0 +1,69 @@
+<div class="container">
+    <div class="my-3">
+        <h4>Add Rundown</h4>
+    </div>
+    <form>
+        <div class="row mb-3">
+            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-6">
+                <label for="rundownTitle">Template</label>
+                <select #templateInput class="form-select" aria-label="Default select example" (change)="title = updateTitle(templateInput.options[templateInput.selectedIndex].text, startDateInput.value);
+                    startTime=updateTemplateStart(templateInput.options[templateInput.selectedIndex].text);
+                    endTime=updateTemplateEnd(templateInput.options[templateInput.selectedIndex].text);">
+                    <option selected>None</option>
+                    <option *ngFor="let template of showTemplates">{{template.templateName}}</option>
+
+                    <!-- <option value="1">5pm News</option>
+                    <option value="2">6pm News</option>
+                    <option value="3">10pm News</option> -->
+                </select>
+
+            </div>
+        </div>
+        <div class="row mb-3">
+            <div class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-6">
+                <label for="rundownTitle">Title</label>
+                <input #titleInput [(ngModel)]="title" type="text" class="form-control" id="rundownTitle"
+                    placeholder="Title" name="title">{{title}}
+            </div>
+        </div>
+        <div class="row mb-3">
+            <div class="form-group col-xs-12 col-sm-12 col-md-4 col-lg-3">
+                <label for="rundownStartDate">Start Date</label>
+                <input #startDateInput [(ngModel)]="startDate" type="date" class="form-control" id="rundownStartDate"
+                    placeholder="" name="startDate"
+                    (change)="templateInput.options[templateInput.selectedIndex].text=='none' ? updateEndDateAndTime(startDateInput.value, startTimeInput.value, (30 * 60)) : ''; title = updateTitle(templateInput.options[templateInput.selectedIndex].text, startDateInput.value)">
+            </div>
+            <div class="form-group col-xs-12 col-sm-12 col-md-4 col-lg-3">
+                <label for="rundownStartTime">Start Time</label>
+                <input #startTimeInput [(ngModel)]="startTime" type="time" class="form-control" id="rundownStartTime"
+                    placeholder="" step="1" name="startTime"
+                    (change)="updateEndDateAndTime(startDateInput.value, startTimeInput.value, (30 * 60))">
+            </div>
+        </div>
+        <div class="row mb-3">
+            <div class="form-group col-xs-12 col-sm-12 col-md-4 col-lg-3">
+                <label for="rundownEndDate">End Date</label>
+                <input #endDateInput [(ngModel)]="endDate" type="date" class="form-control" id="rundownEndDate"
+                    placeholder="" name="endDate">
+            </div>
+            <div class="form-group col-xs-12 col-sm-12 col-md-4 col-lg-3">
+                <label for="rundownEndTime">End Time</label>
+                <input #endTimeInput [(ngModel)]="endTime" type="time" class="form-control" id="rundownEndTime"
+                    placeholder="" step="1" name="endTime">
+            </div>
+        </div>
+        <div class="row mb-3">
+            <div class="form-group">
+                <div class="form-check">
+                    <input #statusInput [(ngModel)]="status" class="form-check-input" type="checkbox" id="activateCheck"
+                        (change)="isActive = !isActive" name="statusInput">
+                    <label class="form-check-label" for="activateCheck">
+                        Activate
+                    </label>
+                </div>
+            </div>
+        </div>
+        <button type="submit" class="btn btn-primary" (click)="addRundown()">Create
+            Rundown</button>
+    </form>
+</div>

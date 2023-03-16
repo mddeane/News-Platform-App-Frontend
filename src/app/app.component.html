@@ -3,7 +3,7 @@
   (mousedown)="xStart = getMoveX($event)" (mouseup)="isMoveActive=false" (dragend)="isMoveActive=false">
 
   <!-- navbar -->
-  <div #nav [ngStyle]="{'width': '100%', 'height': navbarHeight + 'px','float': 'left'}">
+  <div #nav [ngStyle]="{'width': '100%', 'height': 'auto','float': 'left'}">
     <app-navbar></app-navbar>
   </div>
 
@@ -13,8 +13,9 @@
     <app-sidebar-left></app-sidebar-left>
 
     <!-- dragDiv -->
-    <div class="side-drag no-select" (mousedown)="isMoveActive=true; startWidth=side.getClientRects()[0].width;">
-      <i class="bi bi-arrow-left-right"></i>
+    <div class="side-drag no-select" (mousedown)="isMoveActive=true; startWidth=side.getClientRects()[0].width;"
+      (dblclick)="sidebarWidth = defaultSidebarWidth" title="Drag to move or doubleclick to reset.">
+      <i class=" bi bi-arrow-left-right"></i>
     </div>
   </div>
 
@@ -24,6 +25,8 @@
     <app-main-content></app-main-content>
   </div>
 </div>
+<app-alert></app-alert>
+
 <!-- <div #default style="display: none;"></div> -->
 <!-- <div style="position: absolute; top: 300px; right: 300px; z-index: 20; color: white">
   screenWidth: {{screenWidth}}<br>

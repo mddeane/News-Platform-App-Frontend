@@ -1,0 +1,13 @@
+.alertBoxContainer {
+    position: absolute;
+    top: 0px;
+    right: 0px;
+    height: auto;
+    background-color: yellow;
+    margin: 0 auto;
+}
+
+.alertBox {
+    height: auto; 
+    background-color: blue;
+}

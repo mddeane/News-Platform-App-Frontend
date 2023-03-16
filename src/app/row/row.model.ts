@@ -11,19 +11,19 @@ export class Row {
     body: string = "";
     status: string = "";
     slugRowSpan: number = -1;
-    createdBy: User = new User(-1, "", "", "", "", "");
+    createdBy: string = "";
     createdAt: Date = new Date();
-    modifiedBy: User = new User(-1, "", "", "", "", "");
+    modifiedBy: string = "";
     modifiedAt: Date = new Date();
     storyId: number = -1;
-    writer: User = new User(-1, "", "", "", "", "");
+    writer: string = "";
     backTime: Date = new Date();
     frontTime: Date = new Date();
     notes: string = "";
     rowType: string = "";
 
 
-    constructor(rowId: number, pageNumber: string, storySlug: string, segment: string, anchor: string, estTime: string, actTime: string, body: string, status: string, slugRowSpan: number, createdBy: User, createdAt: Date, modifiedBy: User, modifiedAt: Date, storyId: number, writer: User, backTime: Date, frontTime: Date, notes: string, rowType: string) {
+    constructor(rowId: number, pageNumber: string, storySlug: string, segment: string, anchor: string, estTime: string, actTime: string, body: string, status: string, slugRowSpan: number, createdBy: string, createdAt: Date, modifiedBy: string, modifiedAt: Date, storyId: number, writer: string, backTime: Date, frontTime: Date, notes: string, rowType: string) {
         this.rowId = rowId;
         this.pageNumber = pageNumber;
         this.storySlug = storySlug;

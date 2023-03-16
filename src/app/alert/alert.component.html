@@ -1,0 +1,14 @@
+<div [class]="alertService.hasAlerts ? 'alert show' : 'alert hide'">
+    <div *ngFor=" let alert of alertService.alerts; let i=index" #alertDiv (click)="alertService.removeAlert(alertDiv)">
+        <button [class]="'btn btn-' + alert.alertType + ' my-1 btn-alert btn-lg text-start'">
+            <div style="float: left; width: 90%;">
+                {{alert.alertText}}
+            </div>
+
+            <div class="close">
+                <button type="button" class="btn-close btn-close-white" aria-label="Close"></button>
+                <!-- &times; -->
+            </div>
+        </button>
+    </div>
+</div>

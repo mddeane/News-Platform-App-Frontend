@@ -26,6 +26,14 @@ import { FrontTimeCellComponent } from './row/cell/front-time-cell/front-time-ce
 import { NotesCellComponent } from './row/cell/notes-cell/notes-cell.component';
 import { StoryModalComponent } from './story-modal/story-modal.component';
 import { FormatSecondsDirective } from './directives/format-seconds.directive';
+import { AddRundownComponent } from './rundown/add-rundown/add-rundown.component';
+import { HttpClientModule } from '@angular/common/http';
+import { TodayRundownsComponent } from './rundown/today-rundowns/today-rundowns.component';
+import { AlertBoxComponent } from './alert-box/alert-box.component';
+import { AlertComponent } from './alert/alert.component';
+import { DeleteRundownModalComponent } from './rundown/delete-rundown-modal/delete-rundown-modal.component';
+import { DeleteRowModalComponent } from './rundown/delete-row-modal/delete-row-modal.component';
+
 
 @NgModule({
   declarations: [
@@ -51,12 +59,19 @@ import { FormatSecondsDirective } from './directives/format-seconds.directive';
     FrontTimeCellComponent,
     NotesCellComponent,
     StoryModalComponent,
-    FormatSecondsDirective
+    FormatSecondsDirective,
+    AddRundownComponent,
+    TodayRundownsComponent,
+    AlertBoxComponent,
+    AlertComponent,
+    DeleteRundownModalComponent,
+    DeleteRowModalComponent
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
-    FormsModule
+    FormsModule,
+    HttpClientModule
   ],
   providers: [],
   bootstrap: [AppComponent]

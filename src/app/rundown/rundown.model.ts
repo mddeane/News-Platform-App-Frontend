@@ -3,9 +3,9 @@ import { User } from "../user/user.model";
 
 export class Rundown {
     id: number;
-    createdBy: User;
+    createdBy: string;
     createdAt: Date;
-    modifiedBy: User;
+    modifiedBy: string;
     modifiedAt: Date;
     title: string;
     startTime: Date;
@@ -14,7 +14,7 @@ export class Rundown {
     status: string; // activated, deactivated, archived
     rows: Row[];
 
-    constructor(id: number, createdBy: User, createdAt: Date, modifiedBy: User, modifiedAt: Date, title: string, startTime: Date, endTime: Date, isLocked: boolean, status: string, rows: Row[]) {
+    constructor(id: number, createdBy: string, createdAt: Date, modifiedBy: string, modifiedAt: Date, title: string, startTime: Date, endTime: Date, isLocked: boolean, status: string, rows: Row[]) {
         this.id = id;
         this.createdBy = createdBy;
         this.createdAt = createdAt;

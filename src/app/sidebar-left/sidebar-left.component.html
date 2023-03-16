@@ -13,8 +13,14 @@
     </div>
     <div class="collapse" id="rundownChoices">
         <div class="list-group list-group-flush">
-            <a href="javascript:void(0)" class="list-group-item list-group-item-action">Today Rundowns</a>
+            <!-- <a class="list-group-item list-group-item-action" routerLink="/today-rundowns">Today Rundowns</a> -->
+            <a class="list-group-item list-group-item-action" data-bs-toggle="modal"
+                data-bs-target="#todayRundownsModal" (click)="findAllRundowns()">Today
+                Rundowns</a>
+
             <a href="javascript:void(0)" class="list-group-item list-group-item-action">My Rundowns</a>
+            <a class="list-group-item list-group-item-action" routerLink="/add-rundown">Add
+                Rundown</a>
             <a href="javascript:void(0)" class="list-group-item list-group-item-action">More</a>
         </div>
     </div>
@@ -33,4 +39,11 @@
     <!-- <div class="dragDiv">
         <i class="bi bi-arrow-left-right"></i>
     </div> -->
+</div>
+
+<div class="modal fade" id="todayRundownsModal" tabindex="-1" aria-labelledby="todayRundownsModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog">
+        <app-today-rundowns [todayRundowns]="rundownData"></app-today-rundowns>
+    </div>
 </div>

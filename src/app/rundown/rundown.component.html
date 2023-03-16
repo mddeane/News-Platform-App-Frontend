@@ -1,23 +1,18 @@
 <!--  -->
 <div class="container-fluid no-select"
-    (mousemove)="xPos=getMoveX($event); isMoveActive ? colWidths[activeColIndex]=(startWidth + xPos - xStart) : '';"
-    (mousedown)="xStart=xPos" (mouseup)="isMoveActive=false; activeColIndex=-1" (mouseleave)="isMoveActive=false"
+    (mousemove)="xPos=getMoveX($event); isMoveActive ? colWidthsArray[activeRundownIndex][activeColIndex]=(startWidth + xPos - xStart) : '';"
+    (mousedown)="xStart=xPos" (mouseup)="isMoveActive=false;" (mouseleave)="isMoveActive=false"
     (dragend)="isMoveActive=false">
-
 
     <div #tableContainer class="row mt-2">
         <div class="row">
             <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
-
-
-
                 <li *ngFor="let rundown of rundowns; let i = index" class="nav-item" role="presentation">
                     <button [class]="i==0 ? 'nav-link active' : 'nav-link'" [id]="'pills-' + i + '-tab'"
                         data-bs-toggle="pill" [attr.data-bs-target]="'#pills-' + i" type="button" role="tab"
                         [attr.aria-controls]="'pills-' + i" aria-selected="true"
                         (click)="activeRundownIndex=i">{{rundown.title}}</button>
                 </li>
-
 
                 <!-- <li class="nav-item" role="presentation">
                     <button class="nav-link active" id="pills-0-tab" data-bs-toggle="pill" data-bs-target="#pills-0"
@@ -36,8 +31,8 @@
         <div *ngFor="let rundown of rundowns; let i = index" class="tab-content" id="pills-tabContent">
             <div [class]="i==0 ? 'tab-pane fade show active' : 'tab-pane fade'" [id]="'pills-' + i" role="tabpanel"
                 [attr.aria-labelledby]="'pills-' + i + '-tab'">
-
-                <table #table class=" table table-dark table-striped table-bordered">
+                <table #table class=" table table-dark table-striped table-bordered"
+                    [class]="rundown.isLocked ? 'lock-bar' : ''">
                     <thead>
                         <tr>
                             <!-- RUNDOWN MENU -->
@@ -58,8 +53,16 @@
                                         </li>
                                         <li><button class="dropdown-item" type="button" (click)="copyRows()">Copy
                                                 Rows</button></li>
-                                        <li><button class="dropdown-item" type="button" (click)="pasteRows()">Paste
-                                                Rows</button></li>
+                                        <li><button class="dropdown-item" type="button"
+                                                (click)="resetColWidths(activeRundownIndex)">
+                                                Reset columns</button></li>
+                                        <li><button class="dropdown-item text-danger" type="button"
+                                                data-bs-toggle="modal" data-bs-target="#deleteRundownModal"
+                                                (click)="deleteThisRundown = rundown">Delete
+                                                Rundown</button></li>
+                                        <!-- <li><button class="dropdown-item" type="button"
+                                                (click)="pasteRows(rundowns[activeRundownIndex], rundowns[activeRundownIndex].rows.length)">Paste
+                                                Rows</button></li> -->
                                     </ul>
                                 </div>
                             </th>
@@ -75,17 +78,23 @@
                                         id="lockMenu" data-bs-toggle="dropdown" aria-expanded="false"></i>
                                     <!-- LOCK MENU OPTIONS -->
                                     <ul class=" dropdown-menu dropdown-menu-secondary" aria-labelledby="lockMenu">
-                                        <li *ngIf="!rundown.isLocked"><button class="dropdown-item" type="button"
-                                                (click)="rundown.isLocked = true">Lock</button></li>
-                                        <li *ngIf="rundown.isLocked"><button class="dropdown-item" type="button"
-                                                (click)="rundown.isLocked = false; setPageNumbers(rundown)">Unlock</button>
+                                        <li *ngIf="!rundown.isLocked">
+                                            <button class="dropdown-item" type="button" (click)="lockRundown(rundown)">
+                                                Lock
+                                            </button>
+                                        </li>
+                                        <li *ngIf="rundown.isLocked">
+                                            <button class="dropdown-item" type="button"
+                                                (click)="unlockRundown(rundown)">
+                                                Unlock
+                                            </button>
                                         </li>
                                     </ul>
                                 </div>
                             </th>
                             <!-- HEADINGS -->
-                            <th *ngFor="let heading of headings; let i = index"
-                                [ngStyle]="{'width' : colWidths[i] + 'px'}" scope="col">
+                            <th *ngFor="let heading of headings; let j = index"
+                                [ngStyle]="{'width' : colWidthsArray[i][j] + 'px'}" scope="col" #col>
                                 <div class="position-relative">
                                     <div>
                                         {{heading}}
@@ -93,8 +102,9 @@
                                     <!-- RESIZE DIV -->
                                     <div #resize class="col-resize" title="Resize column"
                                         [ngStyle]="{'height':table.offsetHeight +'px', 'top': '-0.5rem'}"
-                                        (mousedown)="activeColIndex=(i); isMoveActive=true; startWidth=colWidths[activeColIndex]">
-
+                                        (mousedown)="activeColIndex=j; isMoveActive=true; startWidth=col.offsetWidth;"
+                                        (mouseup)="colOffsetWidth=col.offsetWidth; activeColIndex=-1"
+                                        (dblclick)="colWidthsArray[i][j] = defaultColWidths[j]">
                                     </div>
                                 </div>
                             </th>
@@ -102,14 +112,16 @@
                     </thead>
                     <tbody>
                         <!-- STORY ROWS -->
-                        <tr *ngFor="let row of rundown.rows; let i = index" #rowElement
-                            (dragstart)="handleDragstart($event, rowElement, row, rundown, i)"
-                            (dragend)="handleDragend($event, rowElement, row, rundown, i)"
-                            (dragenter)="handleDragenter($event, rowElement, row, rundown, i)"
-                            (dragleave)="handleDragleave($event, rowElement, row, rundown, i)"
-                            (dragover)="handleDragover($event, rowElement, row, rundown, i)"
-                            (drop)="handleDrop($event, rowElement, row, rundown, i)"
-                            [class]="((dragActiveRundownId==rundown.id) && (i == dragActiveIndex || i == dragStartIndex)) ||  selectedRowIndexes[activeRundownIndex].includes(i) ? 'row-highlight' : 'no-highlight'">
+                        <tr *ngFor="let row of rundown.rows; let j = index" #rowElement
+                            (dragstart)="handleDragstart($event, rowElement, row, rundown, j)"
+                            (dragend)="handleDragend($event, rowElement, row, rundown, j)"
+                            (dragenter)="handleDragenter($event, rowElement, row, rundown, j)"
+                            (dragleave)="handleDragleave($event, rowElement, row, rundown, j)"
+                            (dragover)="handleDragover($event, rowElement, row, rundown, j)"
+                            (drop)="handleDrop($event, rowElement, row, rundown, j)"
+                            [class]="row.rowType=='break' ? 'table-primary' : ''"
+                            [class]="((dragActiveRundownId==rundown.id) && (j == dragActiveIndex || j == dragStartIndex)) ||  selectedRowIndexes[activeRundownIndex].includes(j) ? 'row-highlight' : 'no-highlight'"
+                            [class.table-secondary]="row.rowType=='break'">
                             <!-- ROW MENU -->
                             <td class="text-center" class="cursor-pointer text-center" data-bs-toggle="dropdown"
                                 aria-expanded="false">
@@ -120,34 +132,47 @@
                                     <ul class="dropdown-menu dropdown-menu-secondary">
                                         <li><button class="dropdown-item" type="button" data-bs-toggle="modal"
                                                 data-bs-target="#storyModal" (click)="storyModalRow = row">
-                                                <i class="bi bi-book"></i>
                                                 Open Story</button>
                                         </li>
                                         <li><button class="dropdown-item" type="button"
-                                                (click)="addRow((i+1), rundown); rundownService.setRowSpans(rundown); !rundown.isLocked ? setPageNumbers(rundown) : '';">
-                                                <i class="bi bi-plus-lg"></i>
-                                                Add Row</button></li>
-                                        <li><button class="dropdown-item" type="button"
-                                                (click)="deleteRow(i, rundown.rows); rundownService.setRowSpans(rundown); !rundown.isLocked ? setPageNumbers(rundown) : '';">
-                                                <i class="bi bi-x-lg"></i>
-                                                Delete Row</button></li>
-
-                                        <li><button class="dropdown-item" [class]="i==0 ? 'disabled' : ''" type="button"
-                                                (click)="moveRow(i, (i-1), rundown); rundownService.setRowSpans(rundown); !rundown.isLocked ? setPageNumbers(rundown) : '';"><i
+                                                (click)="addRow((j+1), rundown); rundownService.setRowSpans(rundown); !rundown.isLocked ? setPageNumbers(rundown) : '';">Add
+                                                Row</button></li>
+                                        <li><button class="dropdown-item" [class]="j==0 ? 'disabled' : ''" type="button"
+                                                (click)="moveRow(j, (j-1), rundown); rundownService.setRowSpans(rundown); !rundown.isLocked ? setPageNumbers(rundown) : '';"><i
                                                     class="bi bi-arrow-up"></i> Move
                                                 Up</button></li>
                                         <li><button class="dropdown-item" type="button"
-                                                [class]="i==(rundown.rows.length - 1) ? 'disabled' : ''" type="button"
-                                                (click)="moveRow(i, (i+1), rundown); rundownService.setRowSpans(rundown); !rundown.isLocked ? setPageNumbers(rundown) : '';"><i
+                                                [class]="j==(rundown.rows.length - 1) ? 'disabled' : ''" type="button"
+                                                (click)="moveRow(j, (j+1), rundown); rundownService.setRowSpans(rundown); !rundown.isLocked ? setPageNumbers(rundown) : '';"><i
                                                     class="bi bi-arrow-down"></i> Move
                                                 Down</button></li>
 
                                         <li><button class="dropdown-item" type="button"
-                                                (click)="selectOrUnselectRow(row, i)"><i class="bi bi-check-square"></i>
-                                                {{selectedRowIndexes[activeRundownIndex].includes(i) ? "Unselect Row" :
+                                                (click)="selectOrUnselectRow(row, j)">
+                                                {{selectedRowIndexes[activeRundownIndex].includes(j) ? "Unselect Row" :
                                                 "Select Row"}}
                                             </button>
                                         </li>
+                                        <li><button class="dropdown-item" type="button" type="button"
+                                                (click)="copyRow(row)">Copy
+                                                Row</button>
+                                        </li>
+                                        <li><button class="dropdown-item" type="button" type="button"
+                                                [class]="copiedRows.length > 0 ? '' : 'disabled'"
+                                                (click)="pasteRows(rundowns[activeRundownIndex], (j+1))">Paste
+                                                Rows</button>
+                                        </li>
+                                        <li><button class="dropdown-item" type="button"
+                                                (click)="addBreak((j+1), rundown); rundownService.setRowSpans(rundown); !rundown.isLocked ? setPageNumbers(rundown) : '';">Add
+                                                Break</button>
+                                        </li>
+                                        <li><button class="dropdown-item text-danger" type="button"
+                                                (click)="deleteRow(j, rundown.rows); rundownService.setRowSpans(rundown); !rundown.isLocked ? setPageNumbers(rundown) : '';">Delete
+                                                Row</button></li>
+                                        <li><button class="dropdown-item text-danger" type="button"
+                                                data-bs-toggle="modal" data-bs-target="#deleteRowModal"
+                                                (click)="deleteThisRowIndex = j; rundownForDeleteRow = rundown">Delete
+                                                Row Modal</button></li>
                                     </ul>
                                 </div>
                                 <!-- ROW MOVE -->
@@ -158,7 +183,7 @@
                             <!-- ROW STATUS -->
                             <td class="col-status text-center p-1" draggable="true">
                                 <!-- ROW STATUS DROPDOWN -->
-                                <div class="dropdown py-1"
+                                <div *ngIf="row.rowType!='break'" class="dropdown py-1"
                                     [class]="!row.body ? rundownService.setStatusBg('unwritten') : rundownService.setStatusBg(row.status)">
                                     <!-- ROW STATUS ICON -->
                                     <i [class]="!row.body ? rundownService.setStatusIcon('unwritten') : rundownService.setStatusIcon(row.status)"
@@ -191,40 +216,69 @@
                                 [ngStyle]="{'vertical-align' : row.slugRowSpan > 1 ? 'top' : ''}">
                                 <app-slug-cell [row]=row [rows]=rundown.rows [rundown]=rundown></app-slug-cell>
                             </td>
-                            <td *ngFor="let cell of cells">
-                                <app-segment-cell *ngIf="cell=='Segment'" [row]=row></app-segment-cell>
-                                <app-anchor-cell *ngIf="cell=='Anchor'" [row]=row></app-anchor-cell>
-                                <app-est-time-cell *ngIf="cell=='Est Time'" [row]=row>
-                                </app-est-time-cell>
-                                <app-act-time-cell *ngIf="cell=='Act Time'" [row]=row></app-act-time-cell>
-                                <app-writer-cell *ngIf="cell=='Writer'" [row]=row></app-writer-cell>
-                                <app-back-time-cell *ngIf="cell=='Back Time'" [row]=row></app-back-time-cell>
-                                <app-front-time-cell *ngIf="cell=='Front Time'" [row]=row>
-                                </app-front-time-cell>
-                                <app-notes-cell *ngIf="cell=='Notes'" [row]=row>
-                                </app-notes-cell>
-                            </td>
+                            <ng-container *ngFor="let heading of headings">
+                                <td *ngIf="heading != 'Page' && heading != 'Slug'">
+                                    <app-segment-cell *ngIf="heading=='Segment'" [row]=row></app-segment-cell>
+                                    <app-anchor-cell *ngIf="heading=='Anchor'" [row]=row></app-anchor-cell>
+                                    <app-est-time-cell *ngIf="heading=='Est Time'" [row]=row>
+                                    </app-est-time-cell>
+                                    <app-act-time-cell *ngIf="heading=='Act Time'" [row]=row></app-act-time-cell>
+                                    <app-writer-cell *ngIf="heading=='Writer'" [row]=row></app-writer-cell>
+                                    <app-back-time-cell *ngIf="heading=='Back Time'" [row]=row></app-back-time-cell>
+                                    <app-front-time-cell *ngIf="heading=='Front Time'" [row]=row>
+                                    </app-front-time-cell>
+                                    <app-notes-cell *ngIf="heading=='Notes'" [row]=row>
+                                    </app-notes-cell>
+                                </td>
+                            </ng-container>
                         </tr>
                     </tbody>
                 </table>
-
-
             </div>
         </div>
     </div>
 </div>
 
-<!-- Modal -->
+<!-- STORY MODAL -->
 <div class="modal fade" id="storyModal" tabindex="-1" aria-labelledby="storyModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-fullscreen">
         <app-story-modal [row]="storyModalRow"></app-story-modal>
     </div>
 </div>
 
-<!-- <button class="btn btn-primary" (click)="updateRows()">Test</button>
-<p>Table Height: {{table.offsetHeight}}</p> -->
-<!-- <p>num {{d | date: "hh:mm:ss"}}</p>
-<div *ngFor="let row of rows">
+<!-- DELETE RUNDOWN MODAL -->
+<div class="modal fade" id="deleteRundownModal" tabindex="-1" aria-labelledby="deleteRundownModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <app-delete-rundown-modal [rundown]="deleteThisRundown"></app-delete-rundown-modal>
+    </div>
+</div>
+
+<!-- DELETE ROW MODAL -->
+<div class="modal fade" id="deleteRowModal" tabindex="-1" aria-labelledby="deleteRowModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <app-delete-row-modal [rowIndex]="deleteThisRowIndex" [rundown]="rundownForDeleteRow"
+            (buttonWasClicked)="buttonInChildComponentWasClicked()"></app-delete-row-modal>
+    </div>
+</div>
+<div *ngIf="showMaintenance">
+    <p>xPos: {{xPos}}</p>
+    <p>xStart: {{xStart}}</p>
+    <p>xPos - xStart: {{xPos - xStart}}</p>
+    <p>startWidth: {{startWidth}}</p>
+    <p>activeColIndex: {{activeColIndex}}</p>
+    <p>colOffsetWidth: {{colOffsetWidth}}</p>
+    <p>colWidthsArray[activeRundownIndex][activeColIndex]: {{colWidthsArray[activeRundownIndex][activeColIndex]}}</p>
+    <p>isMoveActive: {{isMoveActive}}</p>
+    <p>activeRundownIndex: {{activeRundownIndex}}</p>
+    <p>rundowns[activeRundownIndex]: {{rundowns[activeRundownIndex].title}}</p>
+</div>
+
+
+<!-- <button class="btn btn-primary" (click)="updateRows()">Test</button> -->
+<!-- <p>Table Height: {{table.offsetHeight}}</p> -->
+<!-- <p>num {{d | date: "hh:mm:ss"}}</p> -->
+<!-- <div *ngFor="let row of rows">
     <p>
         {{row.rowId}},
         {{row.pageNumber}},

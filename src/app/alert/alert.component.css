@@ -1,0 +1,36 @@
+.alert {
+    position: fixed; 
+    top: 10px;
+    right: 10px;
+    text-align: right;
+    max-height: 100vh;
+    overflow: auto;
+    /* left: 49%;
+    transform: translateX(-51%); */
+}
+
+.show {
+    display: block;
+}
+
+.hide {
+    display: hide;
+}
+
+.btn-alert {
+    border: solid 1px #ccc;
+    border-radius: 0;
+}
+
+.close {
+    float: right; 
+    width: 10%;
+    /* font-size: 150%; 
+    line-height: 80%; */
+    text-align: right;
+}
+
+.close:hover {
+    /* color: rgb(244, 147, 147); */
+    color: #cccccc;
+}

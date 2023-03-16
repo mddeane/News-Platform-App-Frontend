@@ -1,3 +1,4 @@
+import { Constants } from 'src/common/constants';
 import { Functions } from './../common/functions';
 import { Component, HostListener } from '@angular/core';
 
@@ -12,7 +13,8 @@ export class AppComponent {
   screenHeight: number = 0;
 
   navbarHeight: number = 49;
-  sidebarWidth: number = 200;
+  defaultSidebarWidth: number = Constants.defaultSideBarLeftWidth;
+  sidebarWidth: number = this.defaultSidebarWidth;
   mainWidth: number = this.screenWidth - this.sidebarWidth;
 
   xPos: number = 0;
