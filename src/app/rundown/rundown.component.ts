@@ -38,6 +38,7 @@ export class RundownComponent implements OnInit {
   // yEnd: number = 0;
 
   // tableHeight: number = 0;
+  tableWidth: number = 0;
 
   activeColIndex: number = -1;  // mousedown event sets the active colum index, which draws from colWidths array
 
@@ -82,9 +83,15 @@ export class RundownComponent implements OnInit {
 
   showMaintenance: boolean = false;
 
+  public screenWidth: number = 0;
+  public screenHeight: number = 0;
+
+
   constructor(public rundownService: RundownService, public alertService: AlertService) { }
 
   ngOnInit(): void {
+    this.screenWidth = window.innerWidth;
+    this.screenHeight = window.innerHeight;
     // this.rows = this.setRows(this.rowsFromDb);
     // this.rows = this.setRows(this.rundown.rows);
     // this.showRows = this.rundownService.setRowSpans(this.rows);
@@ -393,5 +400,9 @@ export class RundownComponent implements OnInit {
 
   deleteRow(rowIndex: number, rows: Row[]) {
     rows.splice(rowIndex, 1);
+  }
+
+  expandEndOfRundown() {
+    this.colWidthsArray[this.activeRundownIndex][this.activeColIndex] = (this.colWidthsArray[this.activeRundownIndex][this.activeColIndex] + 1)
   }
 }

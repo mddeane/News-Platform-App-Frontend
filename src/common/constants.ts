@@ -68,6 +68,7 @@ export class Constants {
 
     static defaultColHeadingsObj = JSON.parse(this.defaultColHeadingsJSON);
 
+    // change this for column order
     static defaultHeadings: string[] = [
         this.defaultColHeadingsObj.pageHeading,
         this.defaultColHeadingsObj.slugHeading,

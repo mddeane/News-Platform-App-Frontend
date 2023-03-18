@@ -1,5 +1,29 @@
-<div class="main-content-dark">
-    <div class="container-fluid">
+<!-- <div class="main-content-dark" #main (mousedown)="currentScrollLeft = main.scrollLeft"
+    (mousemove)="xPos=getMoveX($event); xPos > (main.offsetWidth - 20) ? main.scrollLeft = main.scrollWidth - main.clientWidth :main.scrollLeft = currentScrollLeft"> -->
+<div class="main-content-dark" #main (mousedown)="currentScrollLeft = main.scrollLeft"
+    (mousemove)="xPos=getMoveX($event);">
+    <div class=" container-fluid">
         <router-outlet></router-outlet>
+    </div>
+    <div *ngIf="showMaintenance">
+        <div>
+            <button class="btn btn-secondary"
+                (click)="main.scrollLeft = main.scrollLeft + (main.scrollWidth - main.clientWidth)">Scroll</button>
+        </div>
+        <div>
+            main.scrollLeft: {{main.scrollLeft}}
+        </div>
+        <div>
+            main.clientWidth: {{main.clientWidth}}
+        </div>
+        <div>
+            main.scrollWidth: {{main.scrollWidth}}
+        </div>
+        <div>
+            main.scrollWidth - main.clientWidth: {{main.scrollWidth - main.clientWidth}}
+        </div>
+        <div>
+            currentScrollLeft: {{currentScrollLeft}}
+        </div>
     </div>
 </div>

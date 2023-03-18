@@ -1,10 +1,11 @@
 <!--  -->
-<div class="container-fluid no-select"
-    (mousemove)="xPos=getMoveX($event); isMoveActive ? colWidthsArray[activeRundownIndex][activeColIndex]=(startWidth + xPos - xStart) : '';"
-    (mousedown)="xStart=xPos" (mouseup)="isMoveActive=false;" (mouseleave)="isMoveActive=false"
+<div #rundownContainer class="container-fluid no-select" [ngStyle]="{'width' : '100%'}" (mousemove)="xPos=getMoveX($event); 
+    isMoveActive && xPos < (screenWidth - 20) ? colWidthsArray[activeRundownIndex][activeColIndex]=(startWidth + xPos - xStart) : '';
+    isMoveActive && xPos > (screenWidth - 20) && (xPos - xStart) > 0 ? colWidthsArray[activeRundownIndex][activeColIndex] = colWidthsArray[activeRundownIndex][activeColIndex] + 2 : '';
+    " (mousedown)="xStart=xPos" (mouseup)="isMoveActive=false;" (mouseleave)="isMoveActive=false"
     (dragend)="isMoveActive=false">
 
-    <div #tableContainer class="row mt-2">
+    <div #tableContainer class="row mt-2" [ngStyle]="{'width': '100%'}">
         <div class="row">
             <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
                 <li *ngFor="let rundown of rundowns; let i = index" class="nav-item" role="presentation">
@@ -32,7 +33,8 @@
             <div [class]="i==0 ? 'tab-pane fade show active' : 'tab-pane fade'" [id]="'pills-' + i" role="tabpanel"
                 [attr.aria-labelledby]="'pills-' + i + '-tab'">
                 <table #table class=" table table-dark table-striped table-bordered"
-                    [class]="rundown.isLocked ? 'lock-bar' : ''">
+                    [class]="rundown.isLocked ? 'lock-bar' : ''" (mousemove)=" isMoveActive && xPos>(tableContainer.offsetWidth-10) ? tableContainer.style.width=(tableContainer.offsetWidth + 10) + '
+                    px' : '' ;">
                     <thead>
                         <tr>
                             <!-- RUNDOWN MENU -->
@@ -103,8 +105,8 @@
                                     <div #resize class="col-resize" title="Resize column"
                                         [ngStyle]="{'height':table.offsetHeight +'px', 'top': '-0.5rem'}"
                                         (mousedown)="activeColIndex=j; isMoveActive=true; startWidth=col.offsetWidth;"
-                                        (mouseup)="colOffsetWidth=col.offsetWidth; activeColIndex=-1"
-                                        (dblclick)="colWidthsArray[i][j] = defaultColWidths[j]">
+                                        (mouseup)="colOffsetWidth=col.offsetWidth; activeColIndex=-1;"
+                                        (dblclick)=" colWidthsArray[i][j]=defaultColWidths[j]">
                                     </div>
                                 </div>
                             </th>
@@ -238,6 +240,12 @@
         </div>
     </div>
 </div>
+<!-- <div style="position: absolute; top: 0px; right: 0px; width: 10px; background-color: red; height: 100%"
+    (mouseover)="true">
+    &nbsp;</div> -->
+
+<!-- **************************************************************** -->
+<!-- MODALS -->
 
 <!-- STORY MODAL -->
 <div class="modal fade" id="storyModal" tabindex="-1" aria-labelledby="storyModalLabel" aria-hidden="true">
@@ -262,16 +270,21 @@
     </div>
 </div>
 <div *ngIf="showMaintenance">
-    <p>xPos: {{xPos}}</p>
-    <p>xStart: {{xStart}}</p>
-    <p>xPos - xStart: {{xPos - xStart}}</p>
-    <p>startWidth: {{startWidth}}</p>
-    <p>activeColIndex: {{activeColIndex}}</p>
-    <p>colOffsetWidth: {{colOffsetWidth}}</p>
-    <p>colWidthsArray[activeRundownIndex][activeColIndex]: {{colWidthsArray[activeRundownIndex][activeColIndex]}}</p>
-    <p>isMoveActive: {{isMoveActive}}</p>
-    <p>activeRundownIndex: {{activeRundownIndex}}</p>
-    <p>rundowns[activeRundownIndex]: {{rundowns[activeRundownIndex].title}}</p>
+    <div>xPos: {{xPos}}</div>
+    <div>xStart: {{xStart}}</div>
+    <div>xPos - xStart: {{xPos - xStart}}</div>
+    <div>startWidth: {{startWidth}}</div>
+    <div>activeColIndex: {{activeColIndex}}</div>
+    <div>colOffsetWidth: {{colOffsetWidth}}</div>
+    <div>colWidthsArray[activeRundownIndex][activeColIndex]: {{colWidthsArray[activeRundownIndex][activeColIndex]}}
+    </div>
+    <div>isMoveActive: {{isMoveActive}}</div>
+    <div>activeRundownIndex: {{activeRundownIndex}}</div>
+    <div>rundowns[activeRundownIndex]: {{rundowns[activeRundownIndex].title}}</div>
+    <div>rundownContainer.offsetWidth: {{rundownContainer.offsetWidth}}</div>
+    <div>screenWidth: {{screenWidth}}</div>
+    <div>within 20: {{xPos > screenWidth - 20}}</div>
+    <div>rundownContainer.scrollLeft: {{rundownContainer.scrollLeft}}</div>
 </div>
 
 
